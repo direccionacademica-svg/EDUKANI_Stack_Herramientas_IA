@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edukani · Stack de Herramientas de IA</title>
+<style>
+:root {
+  --kg-blue:      #644693;
+  --kg-dark:      #3D2370;
+  --kg-logo:      #4A3280;
+  --kg-teal:      #36DEC8;
+  --kg-teal-l:    #E0FAF7;
+  --kg-bg:        #F7F5FF;
+  --kg-white:     #FFFFFF;
+  --kg-text:      #111827;
+  --kg-text2:     #4B5563;
+  --kg-text3:     #9CA3AF;
+  --kg-border:    #E5E7EB;
+  --kg-border2:   #D1D5DB;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px;
+  --sh-sm:0 1px 4px rgba(27,31,200,.06);
+  --sh-md:0 4px 20px rgba(27,31,200,.10);
+  --sh-lg:0 12px 40px rgba(27,31,200,.15);
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--kg-bg);color:var(--kg-text);min-height:100vh;}
+a{color:inherit;text-decoration:none;}
+button{font-family:var(--font);cursor:pointer;border:none;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--kg-blue)30;border-radius:3px;}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:200;background:var(--kg-white);border-bottom:1px solid var(--kg-border);height:54px;display:flex;align-items:center;padding:0 20px;gap:14px;}
+.logo{display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.logo-icon{width:32px;height:32px;background:var(--kg-blue);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden;}
+.logo-icon .k{position:absolute;left:5px;top:3px;font-size:17px;font-weight:900;color:#fff;font-family:Arial,sans-serif;letter-spacing:-1px;}
+.logo-icon .underscore{position:absolute;right:4px;bottom:8px;width:10px;height:3px;background:var(--kg-teal);border-radius:1.5px;}
+.logo-text .brand{font-size:15px;font-weight:700;color:var(--kg-blue);line-height:1;}
+.logo-text .sub{font-size:10px;color:var(--kg-text3);line-height:1;margin-top:1px;}
+.tsearch{flex:1;max-width:360px;position:relative;}
+.tsearch input{width:100%;background:var(--kg-bg);border:1px solid var(--kg-border);border-radius:var(--r-md);padding:7px 12px 7px 34px;font-size:14px;color:var(--kg-text);outline:none;transition:border-color .15s,box-shadow .15s;}
+.tsearch input:focus{border-color:var(--kg-blue);box-shadow:0 0 0 3px var(--kg-blue)15;}
+.tsearch input::placeholder{color:var(--kg-text3);}
+.tsearch .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--kg-text3);font-size:14px;pointer-events:none;}
+.nav-pills{display:flex;gap:3px;margin-left:auto;}
+.np{padding:5px 13px;border-radius:20px;font-size:13px;font-weight:500;background:transparent;color:var(--kg-text2);transition:all .12s;}
+.np:hover{background:var(--kg-bg);}
+.np.active{background:var(--kg-blue);color:#fff;}
+.cmp-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r-md);background:var(--kg-teal-l);color:var(--kg-dark);font-size:12px;font-weight:500;border:1px solid var(--kg-teal)50;transition:all .12s;flex-shrink:0;}
+.cmp-badge{background:var(--kg-blue);color:#fff;border-radius:10px;padding:1px 6px;font-size:10px;}
+.gem-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r-md);background:linear-gradient(135deg,#4285F420,#34A85320);color:#1a6b3c;font-size:12px;font-weight:500;border:1px solid #34A85340;transition:all .12s;text-decoration:none;flex-shrink:0;}
+.gem-btn:hover{background:linear-gradient(135deg,#4285F430,#34A85330);}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:calc(100vh - 54px);}
+.sidebar{width:230px;flex-shrink:0;padding:14px 10px;overflow-y:auto;border-right:1px solid var(--kg-border);background:var(--kg-white);position:sticky;top:54px;height:calc(100vh - 54px);}
+.sb-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--kg-text3);padding:0 6px;margin-bottom:5px;}
+.sb-section{margin-bottom:18px;}
+.fi{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;border-radius:var(--r-sm);cursor:pointer;transition:all .1s;gap:5px;}
+.fi:hover{background:var(--kg-bg);}
+.fi.active{background:var(--kg-blue)12;}
+.fi-left{display:flex;align-items:center;gap:7px;min-width:0;}
+.fi-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.fi-label{font-size:12px;color:var(--kg-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fi.active .fi-label{color:var(--kg-blue);font-weight:500;}
+.fi-cnt{font-size:10px;color:var(--kg-text3);background:var(--kg-bg);border-radius:10px;padding:1px 5px;flex-shrink:0;}
+.fi.active .fi-cnt{background:var(--kg-blue)15;color:var(--kg-blue);}
+.tag-cloud{display:flex;flex-wrap:wrap;gap:4px;padding:0 3px;}
+.tc{font-size:11px;padding:3px 7px;border-radius:10px;cursor:pointer;border:1px solid var(--kg-border2);background:var(--kg-white);color:var(--kg-text2);transition:all .1s;}
+.tc:hover{border-color:var(--kg-blue);color:var(--kg-blue);}
+.tc.active{background:var(--kg-blue);color:#fff;border-color:var(--kg-blue);}
+.clear-btn{width:100%;padding:7px;border-radius:var(--r-sm);background:transparent;color:var(--kg-text3);font-size:12px;border:1px dashed var(--kg-border2);transition:all .15s;}
+.clear-btn:hover{color:var(--kg-blue);border-color:var(--kg-blue);}
+
+/* ── MAIN ── */
+.main{flex:1;padding:18px 20px 40px;overflow-y:auto;min-width:0;}
+
+/* ── HERO SUGGEST ── */
+.hero{background:linear-gradient(135deg,var(--kg-dark) 0%,var(--kg-blue) 65%,#3B44D4 100%);border-radius:var(--r-xl);padding:24px 28px;margin-bottom:20px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:var(--kg-teal)15;}
+.hero::after{content:'';position:absolute;bottom:-60px;left:30%;width:150px;height:150px;border-radius:50%;background:#fff10;}
+.hero h2{font-size:18px;font-weight:700;color:#fff;margin-bottom:3px;position:relative;z-index:1;}
+.hero p{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:14px;position:relative;z-index:1;}
+.hero-row{display:flex;gap:8px;position:relative;z-index:1;}
+.hero-input{flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:var(--r-md);padding:10px 13px;font-size:14px;color:#fff;outline:none;transition:border-color .15s;}
+.hero-input::placeholder{color:rgba(255,255,255,.4);}
+.hero-input:focus{border-color:var(--kg-teal);}
+.hero-btn{padding:10px 20px;border-radius:var(--r-md);background:var(--kg-teal);color:#0A3D36;font-size:14px;font-weight:600;}
+.hero-btn:hover{opacity:.9;}
+.hero-examples{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap;position:relative;z-index:1;}
+.hex{font-size:11px;padding:3px 9px;border-radius:12px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:all .12s;}
+.hex:hover{background:rgba(255,255,255,.18);color:#fff;}
+
+/* ── SUGGEST RESULTS ── */
+.sr-wrap{background:var(--kg-white);border-radius:var(--r-lg);border:1px solid var(--kg-border);padding:18px;margin-bottom:18px;}
+.sr-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sr-head h3{font-size:14px;font-weight:600;}
+.sr-close{background:var(--kg-bg);border:1px solid var(--kg-border);border-radius:6px;padding:3px 9px;font-size:12px;color:var(--kg-text2);}
+.sr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:14px;}
+.sr-card{background:var(--kg-bg);border-radius:var(--r-md);border:1px solid var(--kg-border);padding:12px;cursor:pointer;transition:border-color .12s;}
+.sr-card:hover{border-color:var(--kg-blue);}
+.sr-name{font-size:13px;font-weight:600;margin-bottom:4px;}
+.sr-why{font-size:11px;color:var(--kg-text2);line-height:1.5;margin-bottom:6px;}
+.sr-score{font-size:10px;color:var(--kg-teal);}
+.prompts-section h4{font-size:12px;font-weight:600;color:var(--kg-text2);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.prompts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;}
+.prompt-card{background:linear-gradient(135deg,var(--kg-blue)05,var(--kg-teal)08);border:1px solid var(--kg-blue)15;border-radius:var(--r-md);padding:12px;}
+.pc-tool{font-size:10px;font-weight:600;color:var(--kg-blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;gap:4px;}
+.pc-tecnica{font-size:10px;color:var(--kg-teal);margin-bottom:5px;font-style:italic;}
+.pc-prompt{font-size:11px;color:var(--kg-text);line-height:1.6;font-style:italic;margin-bottom:8px;}
+.pc-copy{font-size:11px;padding:4px 10px;border-radius:6px;background:var(--kg-blue);color:#fff;transition:opacity .12s;}
+.pc-copy:hover{opacity:.85;}
+
+/* ── TECNICAS SECTION ── */
+.tecnicas-wrap{background:var(--kg-white);border-radius:var(--r-lg);border:1px solid var(--kg-border);padding:18px;margin-bottom:18px;}
+.tec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.tec-head h3{font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px;}
+.tec-toggle{background:var(--kg-bg);border:1px solid var(--kg-border);border-radius:6px;padding:3px 9px;font-size:12px;}
+.tec-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.tec-cat-pill{padding:4px 10px;border-radius:12px;font-size:11px;font-weight:500;cursor:pointer;transition:all .12s;border:1px solid transparent;}
+.tec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;}
+.tec-card{background:var(--kg-bg);border-radius:var(--r-md);padding:12px;border:1px solid var(--kg-border);cursor:pointer;transition:all .12s;}
+.tec-card:hover{border-color:var(--kg-blue);background:var(--kg-blue)04;}
+.tec-card.active-tec{border-color:var(--kg-blue);background:var(--kg-blue)08;}
+.tec-letter{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:6px;}
+.tec-name{font-size:12px;font-weight:600;color:var(--kg-text);margin-bottom:3px;}
+.tec-desc{font-size:11px;color:var(--kg-text2);line-height:1.4;}
+.tec-impact{font-size:10px;color:var(--kg-teal);margin-top:4px;font-weight:500;}
+
+/* ── RESULTS HEADER ── */
+.rh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;flex-wrap:wrap;}
+.rh-count{font-size:13px;color:var(--kg-text2);}
+.rh-count strong{color:var(--kg-text);}
+.view-tog{display:flex;gap:3px;}
+.vb{width:30px;height:30px;border-radius:var(--r-sm);background:transparent;color:var(--kg-text3);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .12s;border:1px solid var(--kg-border);}
+.vb:hover,.vb.active{background:var(--kg-blue);color:#fff;border-color:var(--kg-blue);}
+.sort-sel{padding:5px 9px;border-radius:var(--r-sm);border:1px solid var(--kg-border);background:var(--kg-white);font-size:12px;color:var(--kg-text2);outline:none;}
+
+/* ── TOOLS GRID ── */
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:12px;}
+.tg.list{grid-template-columns:1fr;}
+
+/* ── TOOL CARD ── */
+.tool-card{background:var(--kg-white);border-radius:var(--r-lg);border:1px solid var(--kg-border);padding:14px;cursor:pointer;transition:box-shadow .15s,transform .15s,border-color .15s;position:relative;overflow:hidden;}
+.tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cat-color,var(--kg-blue));}
+.tool-card:hover{box-shadow:var(--sh-md);transform:translateY(-1px);}
+.tool-card.sel{border-color:var(--kg-teal);box-shadow:0 0 0 2px var(--kg-teal)40;}
+.tc-num{font-size:10px;color:var(--kg-text3);margin-bottom:2px;}
+.tc-name{font-size:13px;font-weight:600;color:var(--kg-text);margin-bottom:4px;line-height:1.3;}
+.tc-desc{font-size:11px;color:var(--kg-text2);line-height:1.5;margin-bottom:8px;}
+.tc-cats{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:9px;}
+.cat-pill{font-size:9px;padding:2px 6px;border-radius:8px;font-weight:500;white-space:nowrap;background:var(--cat-color,var(--kg-blue))15;color:var(--cat-color,var(--kg-blue));border:1px solid var(--cat-color,var(--kg-blue))25;}
+.tc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;}
+.tc-link{font-size:10px;color:var(--kg-blue);display:flex;align-items:center;gap:2px;opacity:.8;}
+.tc-link:hover{opacity:1;}
+.tc-acts{display:flex;gap:3px;}
+.tc-ab{width:24px;height:24px;border-radius:6px;background:var(--kg-bg);border:1px solid var(--kg-border);color:var(--kg-text3);font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .1s;}
+.tc-ab:hover{background:var(--kg-blue);color:#fff;border-color:var(--kg-blue);}
+.tc-ab.ca{background:var(--kg-teal);color:#0A3D36;border-color:var(--kg-teal);}
+
+/* list view */
+.tg.list .tool-card{display:flex;align-items:center;gap:14px;padding:10px 14px;}
+.tg.list .tool-card::before{top:0;left:0;width:3px;height:100%;right:auto;border-radius:0;}
+.tg.list .tc-num{margin-bottom:0;width:26px;flex-shrink:0;}
+.tg.list .tc-name{margin-bottom:0;width:150px;flex-shrink:0;}
+.tg.list .tc-desc{margin-bottom:0;flex:1;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.tg.list .tc-cats{margin-bottom:0;flex-shrink:0;}
+.tg.list .tc-foot{flex-shrink:0;margin-top:0;}
+
+/* ── MODAL ── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.mo.open{opacity:1;pointer-events:all;}
+.mc{background:var(--kg-white);border-radius:var(--r-xl);max-width:660px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--sh-lg);transform:translateY(16px);transition:transform .2s;}
+.mo.open .mc{transform:translateY(0);}
+.mh{padding:18px 22px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.mc-x{width:30px;height:30px;border-radius:7px;background:var(--kg-bg);border:1px solid var(--kg-border);color:var(--kg-text2);font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mb{padding:14px 22px 22px;}
+.ms{margin-bottom:16px;}
+.ms h4{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--kg-text3);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--kg-border);}
+.ms p{font-size:13px;color:var(--kg-text2);line-height:1.7;}
+.ms-cats,.ms-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.ms-tag{font-size:11px;padding:3px 8px;border-radius:10px;background:var(--kg-bg);border:1px solid var(--kg-border);color:var(--kg-text2);}
+.fp{width:100%;height:160px;border-radius:var(--r-md);background:var(--kg-bg);border:2px dashed var(--kg-border2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--kg-text3);font-size:12px;}
+.ma{display:flex;gap:8px;flex-wrap:wrap;padding:0 22px 22px;}
+.btn-p{padding:9px 18px;border-radius:var(--r-md);background:var(--kg-blue);color:#fff;font-size:13px;font-weight:500;}
+.btn-s{padding:9px 18px;border-radius:var(--r-md);background:var(--kg-bg);border:1px solid var(--kg-border);color:var(--kg-text2);font-size:13px;transition:all .15s;}
+.btn-s:hover{border-color:var(--kg-blue);color:var(--kg-blue);}
+
+/* ── COMPARE PANEL ── */
+.cp-panel{position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--kg-white);border-top:2px solid var(--kg-blue);padding:12px 20px;box-shadow:0 -6px 24px rgba(0,0,0,.1);transform:translateY(100%);transition:transform .25s;}
+.cp-panel.open{transform:translateY(0);}
+.cp-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.cp-title{font-size:13px;font-weight:600;color:var(--kg-blue);}
+.cp-close{background:var(--kg-bg);border:1px solid var(--kg-border);border-radius:6px;padding:3px 9px;font-size:12px;}
+.cp-items{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.cp-item{display:flex;align-items:center;gap:5px;background:var(--kg-bg);border:1px solid var(--kg-border);border-radius:6px;padding:5px 9px;font-size:12px;}
+.cp-rm{background:none;color:var(--kg-text3);font-size:14px;line-height:1;margin-left:2px;}
+.cp-rm:hover{color:#EF4444;}
+.cp-go{padding:8px 18px;border-radius:var(--r-md);background:var(--kg-blue);color:#fff;font-size:12px;font-weight:500;}
+
+/* ── COMPARE VIEW ── */
+.cmp-view{display:none;}
+.cmp-view.active{display:block;}
+.cmp-back{display:flex;align-items:center;gap:7px;margin-bottom:14px;font-size:13px;font-weight:500;color:var(--kg-blue);background:none;padding:0;}
+.cmp-tw{overflow-x:auto;}
+.cmp-table{width:100%;border-collapse:collapse;background:var(--kg-white);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-sm);}
+.cmp-table th{background:var(--kg-blue);color:#fff;padding:12px 14px;font-size:12px;font-weight:600;text-align:left;white-space:nowrap;}
+.cmp-table th:first-child{background:var(--kg-dark);width:130px;}
+.cmp-table td{padding:11px 14px;font-size:12px;color:var(--kg-text2);border-bottom:1px solid var(--kg-border);vertical-align:top;}
+.cmp-table tr:last-child td{border-bottom:none;}
+.cmp-table tr:nth-child(even) td{background:var(--kg-bg);}
+.cmp-table td:first-child{font-weight:600;color:var(--kg-text3);font-size:11px;background:var(--kg-bg)!important;text-transform:uppercase;letter-spacing:.3px;}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:50px 16px;color:var(--kg-text3);}
+.empty .ei{font-size:44px;margin-bottom:10px;}
+.empty h3{font-size:15px;font-weight:600;color:var(--kg-text2);margin-bottom:5px;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--kg-dark);color:#fff;padding:9px 18px;border-radius:var(--r-md);font-size:12px;z-index:999;opacity:0;transition:all .22s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── TEAL BOTTOM BAR ── */
+.teal-bar{position:fixed;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--kg-blue),var(--kg-teal));z-index:200;}
+
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .topbar{padding:0 12px;gap:8px;}
+  .nav-pills,.gem-btn{display:none;}
+  .main{padding:10px 12px;}
+  .tg{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="https://edukani.com" target="_blank" rel="noopener">
+    <div class="logo-icon" style="background:transparent;padding:0;width:auto;overflow:visible"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 28" width="30" height="30" style="margin-right:2px"><rect x="2" y="1" width="13" height="7" rx="1.5" fill="white"/><rect x="2" y="1" width="2.5" height="7" rx="1" fill="rgba(255,255,255,0.55)"/><rect x="0" y="10" width="17" height="7" rx="1.5" fill="white"/><rect x="0" y="10" width="2.5" height="7" rx="1" fill="rgba(255,255,255,0.55)"/><rect x="1" y="19" width="15" height="7" rx="1.5" fill="white"/><rect x="1" y="19" width="2.5" height="7" rx="1" fill="rgba(255,255,255,0.55)"/></svg></div>
+        <div class="logo-text">
+          <div class="brand">Edukani<sup style="font-size:8px;color:#A78BFA;vertical-align:super">®</sup></div>
+          <div class="sub">Aquí nace el mañana</div>
+        </div>
+      <div class="sub">Aquí nace el mañana</div>
+    </div>
+  </a>
+
+  <div class="tsearch">
+    <span class="si">🔍</span>
+    <input type="text" id="gSearch" placeholder="Buscar herramienta, categoría o tag..." autocomplete="off">
+  </div>
+
+  <nav class="nav-pills">
+    <button class="np active" id="navHome" data-view="catalog" onclick="goHome()">🏠 Inicio</button>
+    <button class="np" data-view="catalog" onclick="goHome()">Catálogo</button>
+    <button class="np" data-view="tecnicas-view">Técnicas PE</button>
+    <button class="np" data-view="cmp-view">⚡ Comparar</button>
+  </nav>
+
+  <a class="gem-btn" href="https://gemini.google.com/gem/16wRxSYsCmDOjTYiEFqlRpKlHiEwQHbLr?usp=sharing" target="_blank" rel="noopener" title="Practicar prompt engineering con la Gema Edukani en Gemini" style="background:linear-gradient(135deg,#4285F425,#34A85325);border:1.5px solid #34A85360;font-weight:600;color:#0d5c2e;padding:7px 14px;font-size:12px;border-radius:10px;gap:6px;">
+    ✨ Gema de Prompting
+  </a>
+
+  <button class="cmp-btn" onclick="toggleCmpPanel()">
+    ⚡ Comparar
+    <span class="cmp-badge" id="cmpBadge">0</span>
+  </button>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-section">
+      <div class="sb-title">Categorías</div>
+      <div id="catFilters"></div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Tags</div>
+      <div class="tag-cloud" id="tagCloud"></div>
+    </div>
+    <div class="sb-section">
+      <button class="clear-btn" onclick="clearFilters()">✕ Limpiar filtros</button>
+    </div>
+  </aside>
+
+  <main class="main" id="mainArea">
+
+    <!-- ═══ CATÁLOGO ═══ -->
+    <div id="catalog" class="view-sec">
+      <div class="hero">
+        <h2>¿Qué quieres lograr hoy?</h2>
+        <p>Describe tu necesidad y te sugerimos herramientas + prompts basados en las 21 técnicas del Manual Kingala</p>
+        <div class="hero-row">
+          <input class="hero-input" id="needInput" type="text"
+            placeholder="Ej: crear videos cortos para redes, automatizar correos, construir una app..."
+            onkeydown="if(event.key==='Enter')runSuggest()">
+          <button class="hero-btn" onclick="runSuggest()">Sugerir →</button>
+        </div>
+        <div class="hero-examples">
+          <span class="hex" onclick="setSuggest('Hacer presentaciones impactantes')">📊 Presentaciones</span>
+          <span class="hex" onclick="setSuggest('Crear y editar videos para redes sociales')">🎬 Videos</span>
+          <span class="hex" onclick="setSuggest('Automatizar tareas repetitivas entre apps')">⚡ Automatización</span>
+          <span class="hex" onclick="setSuggest('Generar imágenes para marketing y diseño')">🎨 Imágenes</span>
+          <span class="hex" onclick="setSuggest('Construir una app sin saber programar')">🚀 Apps</span>
+          <span class="hex" onclick="setSuggest('Analizar documentos y extraer información')">🔬 Análisis</span>
+          <span class="hex" onclick="setSuggest('Crear contenido de audio y música')">🎵 Audio</span>
+        </div>
+      </div>
+
+      <div id="suggestResults" style="display:none"></div>
+
+      <div class="rh">
+        <div class="rh-count" id="rhCount"></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select class="sort-sel" id="sortSel" onchange="renderTools()">
+            <option value="num">Orden catálogo</option>
+            <option value="name">Nombre A-Z</option>
+            <option value="cat">Por categoría</option>
+          </select>
+          <div class="view-tog">
+            <button class="vb active" id="gBtn" title="Cuadrícula" onclick="setVMode('grid')">⊞</button>
+            <button class="vb" id="lBtn" title="Lista" onclick="setVMode('list')">☰</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="toolsGrid" class="tg"></div>
+    </div>
+
+    <!-- ═══ TÉCNICAS ═══ -->
+    <div id="tecnicas-view" class="view-sec" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <button class="cmp-back" onclick="goHome()" style="font-size:13px;font-weight:500;color:var(--kg-blue);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;">← Volver al catálogo</button>
+        <a href="https://edukani.com" target="_blank" rel="noopener" style="font-size:11px;color:var(--kg-text3);">kingala.com</a>
+      </div>
+      <div class="tecnicas-wrap">
+        <div class="tec-head">
+          <h3>📖 Manual Estratégico de Prompt Engineering
+            <span style="font-size:11px;font-weight:400;color:var(--kg-text2)">· Kingala Edukani AI · 21 técnicas</span>
+          </h3>
+          <a class="gem-btn" href="https://gemini.google.com/gem/16wRxSYsCmDOjTYiEFqlRpKlHiEwQHbLr?usp=sharing" target="_blank" rel="noopener" style="font-size:11px;">✨ Abrir Gema en Gemini</a>
+        </div>
+        <p style="font-size:12px;color:var(--kg-text2);margin-bottom:14px;line-height:1.6;">Prompts estructurados con técnicas avanzadas superan sistemáticamente a los prompts convencionales: mejoras de entre <strong>40% y 60%</strong> en precisión. Técnicas como Emotion Prompting alcanzan hasta <strong>+115%</strong> en tareas complejas.</p>
+        <div class="tec-cats" id="tecCats"></div>
+        <div class="tec-grid" id="tecGrid"></div>
+      </div>
+    </div>
+
+    <!-- ═══ COMPARAR ═══ -->
+    <div id="cmp-view" class="view-sec cmp-view" style="display:none">
+      <button class="cmp-back" onclick="goHome()">← Volver al catálogo</button>
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:6px;">⚡ Comparativa de herramientas</h2>
+
+      <!-- Instrucciones de uso con selección inline -->
+      <div id="cmpInstructions" style="background:linear-gradient(135deg,#64469308,#36DEC808);border:1px solid #64469320;border-radius:14px;padding:16px 18px;margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:600;color:var(--kg-blue);margin-bottom:8px;">¿Cómo comparar herramientas?</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:flex-start;gap:8px;flex:1;min-width:200px;">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--kg-blue);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+            <div style="font-size:12px;color:var(--kg-text2);line-height:1.5;">Ve al <strong>Catálogo</strong> y busca las herramientas que quieres comparar</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;flex:1;min-width:200px;">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--kg-blue);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+            <div style="font-size:12px;color:var(--kg-text2);line-height:1.5;">Haz clic en el botón <span style="display:inline-flex;align-items:center;gap:3px;background:var(--kg-teal);color:#0A3D36;padding:2px 7px;border-radius:6px;font-weight:600;font-size:11px;">⚡ Añadir</span> en cada tarjeta — puedes elegir hasta 4</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;flex:1;min-width:200px;">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--kg-blue);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+            <div style="font-size:12px;color:var(--kg-text2);line-height:1.5;">Regresa aquí y la tabla aparecerá automáticamente</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;border-top:1px solid #64469315;padding-top:10px;">
+          <button onclick="goHome()" style="background:var(--kg-blue);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;margin-right:8px;">← Ir al Catálogo a seleccionar</button>
+          <span style="font-size:11px;color:var(--kg-text3);">O selecciona directamente aquí:</span>
+        </div>
+
+        <!-- Selector rápido inline -->
+        <div style="margin-top:10px;" id="quickSelector">
+          <div style="font-size:11px;font-weight:500;color:var(--kg-text2);margin-bottom:6px;">Selección rápida (clic para añadir/quitar):</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;" id="quickChips"></div>
+        </div>
+      </div>
+
+      <div id="cmpContent"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- COMPARE PANEL -->
+<div class="cp-panel" id="cpPanel">
+  <div class="cp-h">
+    <span class="cp-title">⚡ Herramientas seleccionadas para comparar: <span id="cpN">0</span>/4 <span style="font-size:11px;font-weight:400;color:var(--kg-text2)">(clic en ⚡ de las tarjetas)</span></span>
+    <button class="cp-close" onclick="toggleCmpPanel()">Cerrar ↓</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div class="cp-items" id="cpItems"></div>
+    <button class="cp-go" id="cpGoBtn" disabled style="opacity:.4" onclick="openCmpView()">Ver comparativa</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="mo" id="toolModal" onclick="if(event.target===this)closeModal()">
+  <div class="mc" id="modalContent"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+<div class="teal-bar"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  KINGALA STACK  ·  DATA
+// ════════════════════════════════════════════════════════
+
+const CAT_COLORS = {
+  "Asistentes Conversacionales":       "#644693",
+  "Investigación y Análisis":          "#065F46",
+  "Buscadores y Directorios de IA":    "#1A9E90",
+  "Diseño y Creatividad Visual":       "#6D28D9",
+  "Generación de Imagen con IA":       "#92400E",
+  "Generación de Video con IA":        "#831843",
+  "Edición de Video":                  "#991B1B",
+  "Generación de Audio y Música":      "#1E40AF",
+  "Automatización e Integración":      "#B45309",
+  "Productividad y Organización":      "#166534",
+  "Desarrollo y Construcción de Apps": "#0F4C81",
+  "Marketing y Atención al Cliente":   "#9D174D",
+  "Formularios y Publicación":         "#374151",
+  "Avatares y Caricaturización":       "#4338CA",
+  "Educación e Idiomas":               "#065F46",
+  "Salud y Bienestar":                 "#BE185D",
+  "Ética y Detección de IA":           "#374151",
+};
+const cc = c => CAT_COLORS[c] || "#644693";
+
+const TOOLS = [
+  {id:1,n:1,name:"ChatGPT",cats:["Asistentes Conversacionales","Generación de Imagen con IA","Desarrollo y Construcción de Apps","Investigación y Análisis","Educación e Idiomas"],desc:"Asistente IA más usado del mundo. Conversación, imágenes (DALL·E/GPT-Image), análisis de datos, código, voz, Custom GPTs y razonamiento avanzado o3.",url:"https://chatgpt.com",tags:["openai","gpt","imagen","código","análisis","voz","razonamiento","custom-gpts","educación","recurso-didáctico","e-learning","interactivo","material-educativo","diseño-instruccional"],plan:"Free / Plus $20 / Pro $200/mes",modelo:"GPT-4o, o3, o4-mini",contexto:"128K tokens",fichaPdf:"https://drive.google.com/file/d/1wnaZWRunLxWTObYzkKBht54ya8qlPYS8/preview"},
+  {id:2,n:2,name:"Claude",cats:["Asistentes Conversacionales","Desarrollo y Construcción de Apps","Investigación y Análisis","Educación e Idiomas"],desc:"Asistente de Anthropic con razonamiento profundo, análisis de documentos extensos, artefactos de código/apps y foco en seguridad.",url:"https://claude.ai",tags:["anthropic","razonamiento","seguridad","código","artefactos","documentos","análisis","recurso-didáctico","educación","interactivo","artefactos-interactivos","diseño-instruccional","e-learning","material-educativo"],plan:"Free / Pro $20 / Max $100/mes",modelo:"Claude Opus 4.8, Sonnet 4.6",contexto:"200K tokens",fichaPdf:"https://drive.google.com/file/d/1Qh12CBjiKPO1H45KOHegEkn56bjHkzws/preview"},
+  {id:3,n:3,name:"Gemini",cats:["Educación e Idiomas","Asistentes Conversacionales","Generación de Imagen con IA","Generación de Video con IA","Investigación y Análisis","Desarrollo y Construcción de Apps"],desc:"Asistente IA multimodal de Google: imágenes (Imagen 4), video (Veo 3), Deep Research, 1M tokens de contexto e integración con Workspace.",url:"https://gemini.google.com",tags:["google","multimodal","workspace","imagen","video","deep-research","contexto-largo","recurso-didáctico","e-learning","interactivo","educación","material-educativo","diseño-instruccional"],plan:"Free / AI Pro $19.99 / AI Ultra $249.99/mes",modelo:"Gemini 3.1 Pro/Flash/Ultra",contexto:"1M tokens",fichaPdf:"https://drive.google.com/file/d/1YF8W31uSNNkvNLvMKCbvGCaAOxzsAuCt/preview"},
+  {id:4,n:4,name:"Meta AI",cats:["Asistentes Conversacionales","Generación de Imagen con IA"],desc:"Asistente IA de Meta integrado en WhatsApp, Instagram y Facebook. Genera imágenes con Imagine y responde en las apps más usadas del mundo.",url:"https://www.meta.ai",tags:["meta","facebook","whatsapp","instagram","social","imagen"],plan:"Gratuito",modelo:"Llama 4",contexto:"128K tokens",fichaPdf:"https://drive.google.com/file/d/14Y4QgTJxL0vPUtUCFTEopZV-NnCb-ct4/preview"},
+  {id:5,n:5,name:"Z AI (ChatGLM)",cats:["Asistentes Conversacionales"],desc:"Asistente conversacional chino con soporte multilingüe, potenciado por Zhipu AI.",url:"https://chat.z.ai",tags:["chino","zhipu","multilingüe"],plan:"Free / Planes de pago",modelo:"GLM-4",contexto:"128K tokens",fichaPdf:"https://drive.google.com/file/d/1kVp_45sEKnJ3sVRspekkdTxmJe_K-u3A/preview"},
+  {id:6,n:6,name:"Manus",cats:["Asistentes Conversacionales","Automatización e Integración"],desc:"Agente IA autónomo que ejecuta tareas complejas end-to-end: investigación web, código, análisis de documentos y workflows multi-paso.",url:"https://manus.im/app",tags:["agente","autónomo","investigación","multi-step","automatización"],plan:"Créditos por uso",modelo:"Propio + modelos externos",contexto:"Variable",fichaPdf:"https://drive.google.com/file/d/1phbRF8bHDDsRXOdl0jrf8Jrp7WlipTjD/preview"},
+  {id:7,n:7,name:"Grok",cats:["Asistentes Conversacionales","Investigación y Análisis"],desc:"Asistente de xAI con acceso en tiempo real a X/Twitter. Deep Search, análisis de tendencias, generación de imágenes Aurora y razonamiento.",url:"https://grok.com",tags:["xai","twitter","tiempo-real","noticias","imagen","tendencias"],plan:"X Premium $8-16 / SuperGrok $30/mes",modelo:"Grok 3 / Grok 3 Reasoning",contexto:"128K tokens",fichaPdf:"https://drive.google.com/file/d/1yc1tSo-ZE0qIjpXrHB4aKpTmt_TFLxOs/preview"},
+  {id:8,n:8,name:"DeepSeek",cats:["Asistentes Conversacionales","Desarrollo y Construcción de Apps","Investigación y Análisis"],desc:"Modelo open-source chino con razonamiento avanzado (R1), código de alta calidad y precios de API entre los más bajos del mercado.",url:"https://www.deepseek.com",tags:["chino","open-source","razonamiento","código","api-barata","r1"],plan:"Free (web) / API pay-per-token muy bajo",modelo:"DeepSeek V3, R1",contexto:"64K tokens",fichaPdf:"https://drive.google.com/file/d/1mbnqHa_jJ8ZY_TkNSSVTe0SGGCx5gZx0/preview"},
+  {id:9,n:9,name:"GPT Personalizado",cats:["Asistentes Conversacionales","Desarrollo y Construcción de Apps"],desc:"Custom GPTs de OpenAI: asistentes configurados con instrucciones, base de conocimiento propia y herramientas para casos de uso específicos.",url:"https://chatgpt.com/gpts",tags:["custom","personalizado","openai","knowledge-base","enterprise"],plan:"Requiere ChatGPT Plus $20/mes",modelo:"GPT-4o",contexto:"128K tokens",fichaPdf:"https://drive.google.com/file/d/1WfchjIttfYXEQiL8_HKMjqPttCaXNKe_/preview"},
+  {id:10,n:10,name:"Kimi",cats:["Asistentes Conversacionales","Investigación y Análisis","Desarrollo y Construcción de Apps"],desc:"Moonshot AI. K3: 2.8T params, 1M tokens contexto plano, Agent Swarm 300 subagentes, Kimi Work (computer use). API 4-17x más barata que GPT.",url:"https://www.kimi.com",tags:["chino","open-weight","contexto-largo","agent-swarm","api-barata","computer-use"],plan:"Free / Moderato $19 / Vivace $199/mes",modelo:"Kimi K3 (2.8T params)",contexto:"1M tokens",fichaPdf:"https://drive.google.com/file/d/1xODCVWfbvJizLqPoJmF8UTmrrMdczS0E/preview"},
+  {id:11,n:11,name:"Perplexity",cats:["Investigación y Análisis","Buscadores y Directorios de IA"],desc:"Motor de búsqueda conversacional con respuestas verificadas, citas y Deep Research en tiempo real.",url:"https://www.perplexity.ai",tags:["búsqueda","investigación","citas","tiempo-real","deep-research"],plan:"Free / Pro $20 / Max $200/mes",modelo:"Gemini, Claude, GPT",contexto:"Variable",fichaPdf:"https://drive.google.com/file/d/1GgjV9PQLzigenQFg2dt5cGiCYOnPwpia/preview"},
+  {id:12,n:12,name:"Google NotebookLM",cats:["Investigación y Análisis","Generación de Audio y Música","Educación e Idiomas"],desc:"Analiza tus documentos con IA. Genera Audio Overviews (podcasts automáticos), mapas mentales, slides y FAQs de tus propias fuentes.",url:"https://notebooklm.google.com",tags:["documentos","podcast","audio","análisis","pdf","deep-research","recurso-didáctico","educación","e-learning","material-educativo","interactivo","diseño-instruccional"],plan:"Free / Pro con AI Pro $19.99/mes",modelo:"Gemini 3.1",contexto:"1M tokens",fichaPdf:"https://drive.google.com/file/d/17QZqMRgouhzwgicihEyyuPu6YSkC7TFm/preview"},
+  {id:13,n:13,name:"PolymerSearch",cats:["Investigación y Análisis"],desc:"Análisis y visualización de datos con IA sin código. Dashboards automáticos desde CSV/Excel.",url:"https://v3.polymersearch.com",tags:["datos","análisis","no-code","dashboards","csv"],plan:"Free / Paid plans",modelo:"IA propia",contexto:"Variable",fichaPdf:"https://drive.google.com/file/d/1QL26JHOAoWkXthl9MooVz8oiPu2M8WWn/preview"},
+  {id:14,n:14,name:"Zoho Analytics",cats:["Investigación y Análisis"],desc:"BI self-service con Ask Zia (preguntas en español), 500+ conectores, white-label y opción on-premise. Ideal para PYMEs.",url:"https://www.zoho.com/analytics",tags:["bi","datos","dashboard","analytics","zoho","self-service"],plan:"Free / Básico $30 / Enterprise $575/mes",modelo:"Zia AI",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1tE6npY6uw6Qv8Vs8frwpgFkbmmdrZcZk/preview"},
+  {id:15,n:15,name:"Toolify AI",cats:["Buscadores y Directorios de IA"],desc:"Directorio y ranking de herramientas de IA con tráfico, revenue estimado y casos de uso. +10,000 herramientas indexadas.",url:"https://toolify.ai",tags:["directorio","ranking","herramientas-ia","descubrir"],plan:"Gratuito (parcialmente)",modelo:"N/A",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1wf5dUxTDOFu3-eLC2NfAW6TBqyRG9L6t/preview"},
+  {id:16,n:16,name:"There's an AI for That",cats:["Buscadores y Directorios de IA"],desc:"El directorio de IA más grande: 15,000+ herramientas, búsqueda por tarea en lenguaje natural.",url:"https://theresanaiforthat.com",tags:["directorio","catálogo","herramientas-ia","descubrir"],plan:"Gratuito para usuarios",modelo:"N/A",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1NdXF26XhJ-sRhu6H0nF0JkRTSXnxadLQ/preview"},
+  {id:17,n:17,name:"Canva",cats:["Diseño y Creatividad Visual","Marketing y Atención al Cliente","Generación de Imagen con IA","Generación de Video con IA","Educación e Idiomas"],desc:"Sistema operativo creativo: diseño gráfico, Magic Studio, Dream Lab (imágenes IA), Canva Video y Affinity Suite incluida. $4B ARR.",url:"https://www.canva.com",tags:["diseño","presentaciones","video","marketing","imagen","plantillas","dream-lab","recurso-didáctico","educación","infografía","e-learning","interactivo","material-educativo","diseño-instruccional"],plan:"Free / Pro $15/mes / Teams $10/asiento",modelo:"Leonardo Phoenix (Dream Lab)",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/12n2QNxq5q8YscU-MblXzVaBYPsu2fEJd/preview"},
+  {id:18,n:18,name:"Gamma",cats:["Diseño y Creatividad Visual","Productividad y Organización","Educación e Idiomas"],desc:"Genera presentaciones, documentos web y páginas con IA en minutos desde un prompt, URL o archivo.",url:"https://gamma.app",tags:["presentaciones","slides","documentos","diseño","web","recurso-didáctico","educación","material-educativo","e-learning","interactivo","diseño-instruccional"],plan:"Free / Plus $10 / Pro $20/mes",modelo:"GPT-4, Claude",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1heSwAI2YnIeDugM_YFI9AvhmVQZ-BM8c/preview"},
+  {id:19,n:19,name:"Napkin AI",cats:["Educación e Idiomas","Diseño y Creatividad Visual"],desc:"Convierte texto en diagramas, visualizaciones e infografías automáticamente.",url:"https://www.napkin.ai",tags:["diagramas","visualización","infografías","conceptos","recurso-didáctico","e-learning","interactivo","educación","material-educativo","diseño-instruccional","visual-learning"],plan:"Free / Plus $12/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1RPIk6ERWY6H1kiOVNC_Yjy7jd0kcT4jD/preview"},
+  {id:20,n:20,name:"Whimsical AI",cats:["Educación e Idiomas","Diseño y Creatividad Visual","Productividad y Organización"],desc:"Wireframes, diagramas de flujo, mapas mentales y documentos colaborativos con IA.",url:"https://whimsical.com",tags:["wireframes","diagramas","flujos","mapas-mentales","colaboración","recurso-didáctico","e-learning","interactivo","educación","material-educativo","diseño-instruccional","mapa-mental"],plan:"Free / Pro $10/mes",modelo:"GPT",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1xhKRd-p7qot7i1kpT2zoGSnDvkcL4bg6/preview"},
+  {id:21,n:21,name:"Figma",cats:["Diseño y Creatividad Visual"],desc:"Estándar de la industria para UI/UX, prototipado colaborativo y Figma AI para generación de diseños.",url:"https://www.figma.com",tags:["ui","ux","diseño","prototipo","colaboración","handoff"],plan:"Free / Pro $15/editor/mes",modelo:"Figma AI",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1h9Yw8QKavxhHYhkaWPX7KjIQRNBCZkWt/preview"},
+  {id:22,n:22,name:"Looka",cats:["Diseño y Creatividad Visual","Marketing y Atención al Cliente"],desc:"Generador de logos e identidad de marca completa con IA: logo, paleta, tipografía y brand kit.",url:"https://looka.com",tags:["logo","marca","identidad","branding","kit"],plan:"Logo desde $20 / Brand Kit $80/año",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1W1jesOVBiwlh6nPM5sGofx9ka8-aCeGY/preview"},
+  {id:23,n:23,name:"FLUX AI",cats:["Diseño y Creatividad Visual"],desc:"Diseño electrónico EDA con IA para PCBs en navegador, SPICE integrado y supply chain en vivo.",url:"https://www.flux.ai",tags:["pcb","electrónica","eda","circuitos","hardware"],plan:"Free / Starter $15 / Pro $39/mes",modelo:"IA propia (EDA)",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1YCJ9fte1OEVjfKO4YDIhTb4nvSgK0_y5/preview"},
+  {id:24,n:24,name:"Google Stitch",cats:["Diseño y Creatividad Visual","Desarrollo y Construcción de Apps"],desc:"Generador de UI de Google Labs: de prompt a interfaz alta fidelidad en React, Flutter, SwiftUI. Exporta a Figma. 100% gratis.",url:"https://stitch.withgoogle.com",tags:["ui","diseño","google","figma","react","flutter","gratis"],plan:"Gratuito",modelo:"Gemini 3.1",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1fXpQLA-ZOeTj3QPsAZtWVm2TU_tcbtY_/preview"},
+  {id:25,n:25,name:"Midjourney",cats:["Generación de Imagen con IA"],desc:"El generador de arte digital más reconocido. Calidad artística insuperable con V7, editor web y generación por referencia.",url:"https://www.midjourney.com",tags:["imagen","arte","generación","estilo","v7"],plan:"Basic $10 / Standard $30 / Pro $60/mes",modelo:"Midjourney V7",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1WhKihBIKMrYuJx1D_KGk_oZLJhyFlGL1/preview"},
+  {id:26,n:26,name:"DALL·E 3",cats:["Generación de Imagen con IA"],desc:"Generador de imágenes de OpenAI. Excelente siguiendo instrucciones textuales precisas. Disponible en ChatGPT.",url:"https://openai.com/dall-e-3",tags:["imagen","openai","generación","instrucciones"],plan:"Incluido en ChatGPT Plus",modelo:"DALL·E 3 / GPT-Image-1",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1qFZVjiktfig16P6-h14EyWeUzM-B9f4f/preview"},
+  {id:27,n:27,name:"Leonardo AI",cats:["Generación de Imagen con IA","Diseño y Creatividad Visual"],desc:"Generación de imágenes y assets para videojuegos, marketing y diseño. Modelo Phoenix integrado en Canva Dream Lab.",url:"https://leonardo.ai",tags:["imagen","juegos","assets","phoenix","diseño"],plan:"Free 150 tokens/día / Paid desde $12/mes",modelo:"Phoenix, Alchemy",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1_IgcVgAZQpyjef1ZG-gIxn0t1-WBynPk/preview"},
+  {id:28,n:28,name:"Mokker",cats:["Generación de Imagen con IA","Marketing y Atención al Cliente"],desc:"Fotografía de producto con fondos IA para e-commerce. Elimina el fondo y genera escenarios comerciales profesionales.",url:"https://mokker.ai",tags:["producto","fondo","ecommerce","fotografía","marketing"],plan:"Free 40 fotos totales / Paid desde $27/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/11ONDnpo6HBI4jY_LujLZYhSmNUv8aGSf/preview"},
+  {id:29,n:29,name:"PicLumen",cats:["Generación de Imagen con IA"],desc:"Generador de imágenes IA. Plan Free hace las creaciones públicas — no usar para contenido confidencial.",url:"https://www.piclumen.com",tags:["imagen","generación","gratis"],plan:"Free / Planes en Lumens",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1kZ9RHLGnyxvv2kv4TUIQ_MGpkxXejKuG/preview"},
+  {id:30,n:30,name:"Nano Banana (Google)",cats:["Generación de Imagen con IA"],desc:"Modelo de generación de imágenes de Google DeepMind (Imagen 4). Acceso via Gemini y Google AI Studio.",url:"https://gemini.google.com",tags:["google","deepmind","imagen","imagen4"],plan:"Incluido en planes Google",modelo:"Imagen 4",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1U_BuuM4QIPoMMbrOF8pX2MU92F4lArY5/preview"},
+  {id:31,n:31,name:"Sora (OpenAI)",cats:["Generación de Video con IA"],desc:"Generador de video fotorrealista de OpenAI. Sin tier gratuito desde ene 2026. No disponible en EEA/UK.",url:"https://openai.com/sora",tags:["video","openai","fotorrealista","storyboard"],plan:"Plus $20 / Pro $200/mes (sin free)",modelo:"Sora 2",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1DAsORLvi6MupaxeqjJW9YvVYA9-Wnr0_/preview"},
+  {id:32,n:32,name:"Veo 3 (Google)",cats:["Generación de Video con IA","Generación de Audio y Música"],desc:"Generador de video con física realista Y audio sincronizado de Google. Primero en generar video con sonido ambiente y diálogo integrado.",url:"https://deepmind.google/veo",tags:["video","google","física","audio","diálogo"],plan:"Incluido en Gemini Ultra $249.99/mes",modelo:"Veo 3.1",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1vJGLNcSjGo5c0LnkGqndHxoCPSl6X05O/preview"},
+  {id:33,n:33,name:"Runway",cats:["Generación de Video con IA","Edición de Video"],desc:"Plataforma líder para generación y edición de video IA. Gen-4 Turbo, video-to-video, inpainting y audio a video.",url:"https://runwayml.com",tags:["video","generación","edición","gen-4","inpainting"],plan:"Free 125 créditos / Standard $15 / Pro $35/mes",modelo:"Gen-4 Turbo",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1x9y9SVjBXBKChIw1ntMcTJd1wWBq31l6/preview"},
+  {id:34,n:34,name:"HeyGen",cats:["Generación de Video con IA","Marketing y Atención al Cliente"],desc:"Videos con avatares IA para comunicación y marketing. Traducción de video con lip sync automático.",url:"https://app.heygen.com",tags:["avatar","video","marketing","traducción","lip-sync"],plan:"Free 1 min/mes / Creator $29 / Team $89/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1ANNAR_tvzvgoraDWEkAgBF-A8tgdv4U9/preview"},
+  {id:35,n:35,name:"Synthesia",cats:["Generación de Video con IA","Marketing y Atención al Cliente"],desc:"Plataforma enterprise para videos formativos con avatares IA. Moderación estricta en contenido médico/legal.",url:"https://www.synthesia.io",tags:["avatar","enterprise","video","formación","corporativo"],plan:"Starter $22 / Creator $67 / Enterprise custom",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1KgGLENDtABASbQJCp4Zr-o75W1Gi7axm/preview"},
+  {id:36,n:36,name:"Vidnoz",cats:["Generación de Video con IA"],desc:"Creador de video con avatares desde texto. Plan Free: 8 créditos/día ≈ 16 seg con watermark.",url:"https://es.vidnoz.com",tags:["video","avatar","generación","gratuito"],plan:"Free 8 créditos/día / Pro desde $19.99/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1XZeyekiR3isleaNphJl6HBPOF-BVTm_I/preview"},
+  {id:37,n:37,name:"YesChat Video Generator",cats:["Generación de Video con IA"],desc:"Generador de video con múltiples modelos IA. Sin login para prueba básica.",url:"https://www.yeschat.ai",tags:["video","gratuito","sin-login","multi-modelo"],plan:"Free / Planes de pago",modelo:"Múltiples",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1zieI73jQd4m7xn3Xah-d-Ck3z-KeiYNt/preview"},
+  {id:38,n:38,name:"Pictory",cats:["Generación de Video con IA","Marketing y Atención al Cliente"],desc:"Videos automáticos desde guiones o blogs. Ideal para repurposing de contenido. Sin plan gratuito permanente.",url:"https://app.pictory.ai",tags:["video","blog","guión","repurposing","content"],plan:"Starter $23 / Professional $47/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1z6ts75mTgJ8Ud6nQCOMfo2IJFHmINppY/preview"},
+  {id:39,n:39,name:"Google DeepMind",cats:["Investigación y Análisis"],desc:"Laboratorio de IA de Google: Gemini, Veo, AlphaFold (Nobel 2024), Lyria (música) y modelos de frontera.",url:"https://deepmind.google",tags:["google","investigación","alphafold","nobel","frontera"],plan:"Acceso via productos Google",modelo:"Gemini, Veo, AlphaFold",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1O972949wOh9iwEXz1DcXSETfZSYj4LTX/preview"},
+  {id:40,n:40,name:"Captions",cats:["Edición de Video"],desc:"Editor de video con subtítulos automáticos de alta precisión y Eye Contact AI (nota ética sobre uso).",url:"https://www.captions.ai",tags:["subtítulos","video","edición","ios","android"],plan:"Free / Pro $7.99 / Creator $12.99/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1jADUWirAQYeAw9O9Om6sZGfaAx16cuTa/preview"},
+  {id:41,n:41,name:"CapCut",cats:["Edición de Video","Generación de Video con IA"],desc:"Editor y generador de video de ByteDance. Nota: restricciones en EE.UU. por ByteDance/TikTok.",url:"https://www.capcut.com",tags:["video","edición","tiktok","bytedance","móvil","gratis"],plan:"Free / Pro $7.99/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1IRK4G8wOKq42CCI6wmSwYMsvsAHYQU07/preview"},
+  {id:42,n:42,name:"OpusClip",cats:["Edición de Video","Marketing y Atención al Cliente"],desc:"Extrae clips virales de videos largos con IA → Shorts, Reels y TikToks automáticamente.",url:"https://www.opus.pro",tags:["clips","viral","shorts","repurposing","youtube","podcast"],plan:"Free / Starter $9 / Pro $29/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1WoibVWOa0LyNyDVNSJimU0B-c-9pOQZI/preview"},
+  {id:43,n:43,name:"Kinn AI",cats:["Edición de Video"],desc:"App móvil de generación de video con avatares IA.",url:"https://apps.apple.com/mx/app/kinn-ai-ai-video-generator/id6544800884",tags:["avatar","video","móvil"],plan:"App gratuita con compras in-app",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1fie8vsWsp_RI7U1f2oMs1Sk_5rFrN_DL/preview"},
+  {id:44,n:44,name:"NablaMind",cats:["Edición de Video","Productividad y Organización"],desc:"Suite de utilidades: grabación de pantalla, descarga de videos. No es chatbot de IA conversacional.",url:"https://nablamind.com",tags:["grabación","descarga","pantalla","utilidades"],plan:"Freemium",modelo:"N/A",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/107Ymfp-hGeLMdp8Tty1MM3Hj7A5Inxxx/preview"},
+  {id:45,n:45,name:"Suno",cats:["Generación de Audio y Música"],desc:"El generador de música más popular: de prompt de texto a canción completa con letra y voz. V4 con mayor calidad.",url:"https://suno.com",tags:["música","canción","letra","voz","generación","v4"],plan:"Free 50 créditos/día / Pro $8 / Premier $24/mes",modelo:"Suno V4",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/144DOclA0FTvsvyvG9ZupLa64YpWMSMzp/preview"},
+  {id:46,n:46,name:"ElevenLabs",cats:["Generación de Audio y Música","Marketing y Atención al Cliente"],desc:"Estándar de industria para texto a voz hiperrealista, clonación de voz, doblaje. 5,000+ voces en 32 idiomas.",url:"https://elevenlabs.io",tags:["voz","tts","clonación","audio","doblaje","32-idiomas"],plan:"Free 10K chars/mes / Starter $5 / Creator $22/mes",modelo:"ElevenLabs V3",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1z9IbKIGBTPVvHRcuUVRrZY6YOdIGe-0W/preview"},
+  {id:47,n:47,name:"Song.do",cats:["Generación de Audio y Música"],desc:"Generador de canciones personalizadas con IA. Derechos comerciales solo en planes de pago.",url:"https://song.do",tags:["música","canción","personalizada"],plan:"Free (limitado) / Planes de pago",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1FvP26HsJ0aguZ5pmg2634t_PVWzbCuVL/preview"},
+  {id:48,n:48,name:"Zapier",cats:["Automatización e Integración","Marketing y Atención al Cliente"],desc:"Automatización entre 6,000+ apps sin código. Zaps, Tables, Interfaces y Zapier AI para flows inteligentes.",url:"https://zapier.com",tags:["automatización","integración","flujos","no-code","6000-apps"],plan:"Free 100 tasks/mes / Starter $20 / Pro $49/mes",modelo:"GPT-4 (Zapier AI)",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1ibcpmpwlOmIlhpEaJZYsNB_XUwBzCMcC/preview"},
+  {id:49,n:49,name:"Make",cats:["Automatización e Integración"],desc:"Automatización visual avanzada. Operaciones complejas, transformaciones de datos y conectores ilimitados.",url:"https://www.make.com",tags:["automatización","visual","flujos","avanzado","transformaciones"],plan:"Free 1000 ops/mes / Core $10.59 / Pro $18.82/mes",modelo:"IA integrada",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1kpCmteSrTL4amgTU3pHVw-08yooAgZPS/preview"},
+  {id:50,n:50,name:"n8n",cats:["Automatización e Integración","Desarrollo y Construcción de Apps"],desc:"Automatización open-source y self-hosteable. Máximo control y privacidad. Ideal para developers.",url:"https://n8n.io",tags:["automatización","open-source","self-hosted","privacidad"],plan:"Free (cloud limitado) / Starter $24 / Self-hosted gratis",modelo:"Compatible con cualquier LLM",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1Q_lbPobIXlJ0SoqSJ9g25FAXkeV3KDM7/preview"},
+  {id:51,n:51,name:"Notion AI",cats:["Productividad y Organización","Investigación y Análisis"],desc:"IA en Notion para escritura, resúmenes, búsqueda en workspace, análisis de bases de datos y generación de contenido.",url:"https://www.notion.so/product/ai",tags:["notas","wiki","escritura","base-de-datos","productividad"],plan:"Free (limitado) / AI Add-on $10/mes/usuario",modelo:"GPT-4, Claude",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/12D72sfU3Sl9ZW5btbQi7mFjz6FbdvK17/preview"},
+  {id:52,n:52,name:"Superhuman",cats:["Productividad y Organización"],desc:"Cliente de email con IA para inbox zero: Auto-summarize, Instant Reply, Ask AI y shortcuts.",url:"https://superhuman.com",tags:["email","correo","productividad","inbox-zero"],plan:"Business $33/mes",modelo:"GPT-4, Claude",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1acYPA9sOQ7J-XyYtXrWzL2CMFNaA5gUe/preview"},
+  {id:53,n:53,name:"Granola",cats:["Productividad y Organización"],desc:"Resúmenes automáticos de reuniones. SOC 2 Tipo 2. Plan Free: 25 reuniones totales (no mensuales).",url:"https://granola.so",tags:["reuniones","notas","transcripción","resumen","soc2"],plan:"Free 25 reuniones totales / Pro $18/mes",modelo:"GPT-4",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1qHWeVNJfo5TAZbofoOWE0zjmhTfS1sSX/preview"},
+  {id:54,n:54,name:"Loom",cats:["Productividad y Organización","Marketing y Atención al Cliente"],desc:"Videos asíncronos con IA para equipos. Transcripción automática, resumen y herramientas de engagement.",url:"https://www.loom.com",tags:["video","asíncrono","comunicación","screen-recording","equipos"],plan:"Free 25 videos / Business $12.50/creator/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1QECwwpH5f_0X7qHFp4A2V6p0nhWwvR2d/preview"},
+  {id:55,n:55,name:"Bolt.new",cats:["Educación e Idiomas","Desarrollo y Construcción de Apps"],desc:"Constructor de apps full-stack en el navegador con WebContainers. React, Node, Python. Deploy sin instalar nada.",url:"https://bolt.new",tags:["apps","vibe-coding","react","nodejs","deploy","python","recurso-didáctico","interactivo","e-learning","app-educativa","no-code"],plan:"Free 1M tokens/mes / Pro $25/mes",modelo:"Claude Sonnet",contexto:"Token-based",fichaPdf:"https://drive.google.com/file/d/1IaE_RnA_gP2EhV75A1LFC8CRZwsLOxtp/preview"},
+  {id:56,n:56,name:"Base44",cats:["Educación e Idiomas","Desarrollo y Construcción de Apps"],desc:"Apps full-stack con BD, auth, pagos, email, SMS y Superagentes incluidos. Adquirida por Wix $80M (2025).",url:"https://base44.com",tags:["apps","no-code","vibe-coding","bd","auth","pagos","wix","recurso-didáctico","interactivo","e-learning","app-educativa"],plan:"Free / Starter $20 / Builder $50 / Pro $100/mes",modelo:"Claude, GPT",contexto:"Variable",fichaPdf:"https://drive.google.com/file/d/1091WZAICBDZFWK-FIrzQJtpqtSciEEhb/preview"},
+  {id:57,n:57,name:"Lovable",cats:["Educación e Idiomas","Desarrollo y Construcción de Apps"],desc:"Apps React + Supabase completas desde un prompt. $200M ARR. Créditos compartidos por workspace en Pro.",url:"https://lovable.dev",tags:["apps","react","supabase","vibe-coding","typescript","recurso-didáctico","interactivo","e-learning","app-educativa","no-code"],plan:"Free 30 créditos/mes / Pro $25/mes (equipo)",modelo:"Claude",contexto:"Variable",fichaPdf:"https://drive.google.com/file/d/1rrfFCowXfe7lefVwg7CVCKhiJ2hDF6b_/preview"},
+  {id:58,n:58,name:"Replit AI",cats:["Educación e Idiomas","Desarrollo y Construcción de Apps"],desc:"IDE en la nube con Agent 4 autónomo (200 min/sesión), 160+ integraciones, 50+ lenguajes. $253M ARR.",url:"https://replit.com/ai",tags:["ide","agente","python","javascript","deploy","autónomo","recurso-didáctico","interactivo","e-learning","app-educativa","no-code","vibe-coding"],plan:"Free / Core $20 / Pro $100/mes (15 builders)",modelo:"Agent 4 (multi-modelo)",contexto:"Variable",fichaPdf:"https://drive.google.com/file/d/1dEu3oMrPFSjM_yDHm5408cDBjy_ZxTpU/preview"},
+  {id:59,n:59,name:"Google AI Studio",cats:["Desarrollo y Construcción de Apps","Investigación y Análisis"],desc:"IDE experimental gratuito para Gemini. Tier gratuito puede usar datos para entrenamiento — no usar con datos confidenciales.",url:"https://aistudio.google.com",tags:["google","gemini","api","desarrolladores","gratis","modelos"],plan:"Gratuito (con advertencia privacidad)",modelo:"Gemini 3.1 Pro/Flash",contexto:"1M tokens",fichaPdf:"https://drive.google.com/file/d/1DDvT8y36p6AlmGctKs9useUfvVXkbglq/preview"},
+  {id:60,n:60,name:"ManyChat",cats:["Marketing y Atención al Cliente","Automatización e Integración"],desc:"Automatización de marketing conversacional en WhatsApp, Instagram, Messenger y SMS. Flujos y chatbots.",url:"https://manychat.com",tags:["chatbot","whatsapp","instagram","marketing","automatización","leads"],plan:"Free / Pro desde $15/mes",modelo:"GPT-4",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/13cwYnMofR-u8EpMNaRGJIG9ZtqqGZ4LE/preview"},
+  {id:61,n:61,name:"Cliengo",cats:["Marketing y Atención al Cliente"],desc:"Chatbot y CRM para leads en LATAM. Empresa argentina. Costo WhatsApp adicional de Meta no incluido.",url:"https://www.cliengo.com",tags:["chatbot","crm","leads","latam","argentina","ventas"],plan:"Starter $99 / Business $215/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1VGSGvS9-g1fbapTkWF29-CnQtDAF5-DR/preview"},
+  {id:62,n:62,name:"Respond.io",cats:["Marketing y Atención al Cliente"],desc:"CRM de mensajería omnicanal con IA. Centraliza WhatsApp, IG, Messenger, Email. Costo WhatsApp adicional.",url:"https://respond.io/es",tags:["crm","mensajería","omnicanal","ventas","soporte","multicanal"],plan:"Starter $99 / Growth $199 / Business $349/mes",modelo:"GPT-4, Claude",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1VMIuEYeCi8SbdDVQQpRWo94S-wIgZgUE/preview"},
+  {id:63,n:63,name:"Landingsite AI",cats:["Marketing y Atención al Cliente","Diseño y Creatividad Visual"],desc:"Generador de landing pages optimizadas con IA. De brief a página publicada en minutos.",url:"https://landingsite.ai",tags:["landing-page","marketing","generación","conversión","diseño"],plan:"Free / Paid plans",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1-dVggmqrTVRAhbyuXNC9sFKgOEirl3Mz/preview"},
+  {id:64,n:64,name:"Jasper AI",cats:["Marketing y Atención al Cliente"],desc:"Plataforma enterprise de contenido de marketing con Brand Voice, Templates y flujos a escala.",url:"https://www.jasper.ai",tags:["copywriting","contenido","marketing","brand-voice","seo"],plan:"Creator $49 / Teams $125/mes",modelo:"GPT-4, Claude",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1b1M5oRput_kLdP9TxX41SJWp_VuvEjXC/preview"},
+  {id:65,n:65,name:"Tally Forms",cats:["Formularios y Publicación"],desc:"Formularios ilimitados y gratuitos. Fair Use Policy. Comisión 0.5% en pagos Stripe del plan Free.",url:"https://tally.so",tags:["formularios","encuestas","gratis","ilimitado","no-code"],plan:"Free (ilimitado) / Pro $29/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1uJMiQkqgU9aWthOhyuSjb_-IkYLHnJ2u/preview"},
+  {id:66,n:66,name:"Typeform",cats:["Formularios y Publicación","Marketing y Atención al Cliente"],desc:"Formularios conversacionales interactivos con diseño premium. Precio escala por respuestas mensuales.",url:"https://www.typeform.com",tags:["formularios","encuestas","conversacional","interactivo","leads"],plan:"Free (10 resp/mes) / Plus $25 / Business $83/mes",modelo:"GPT-4",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1RfKDBvDuiKu6uOxoW2VsfMDVJNGe5JlZ/preview"},
+  {id:67,n:67,name:"Issuu",cats:["Formularios y Publicación","Marketing y Atención al Cliente"],desc:"Publicación digital de documentos en flipbook. Plan Free es público — no subir contenido confidencial.",url:"https://issuu.com",tags:["publicación","revista","flipbook","catálogo","digital"],plan:"Free (público) / Starter $17 / Premium $33/mes",modelo:"N/A",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1K9cKJMxsnGU3NlbsZ9poK7tJHQrSBP4v/preview"},
+  {id:68,n:68,name:"Hedra",cats:["Avatares y Caricaturización","Generación de Video con IA"],desc:"Avatares parlantes desde foto + audio con lip sync. Character-3. Live Avatars ($0.05/min) facturado aparte.",url:"https://www.hedra.com",tags:["avatar","parlante","lip-sync","foto","audio"],plan:"Free / Standard $8 / Pro $24/mes",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1BfzWtObzfb8oMnOlfN-pdSQC8ttT_G9a/preview"},
+  {id:69,n:69,name:"Delilah AI",cats:["Avatares y Caricaturización","Investigación y Análisis"],desc:"Asistente académico para análisis de documentos. Free: 3,000 palabras/mes.",url:"https://creati.ai",tags:["académico","análisis","documentos"],plan:"Free 3000 palabras/mes / Paid plans",modelo:"GPT-4",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1JPPLA7jeHtn4M4qyKDoEVJeCUIgd-4P2/preview"},
+  {id:70,n:70,name:"Khanmigo",cats:["Educación e Idiomas"],desc:"Tutor socrático de IA de Khan Academy. $44/año. Docentes en beta gratuita. Guía sin dar respuestas directas.",url:"https://www.khanacademy.org/khan-labs",tags:["tutor","educación","aprendizaje","socrático","recurso-didáctico","e-learning","interactivo","diseño-instruccional","material-educativo"],plan:"$44/año / Gratuito docentes (beta)",modelo:"GPT-4",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1vCeXwJOT2aARTy7uuK6xPnoMtvG_vkTi/preview"},
+  {id:71,n:71,name:"BoldVoice",cats:["Educación e Idiomas"],desc:"Entrenador de pronunciación en inglés americano con IA. Solo inglés americano.",url:"https://boldvoice.com",tags:["pronunciación","inglés","acento","idioma"],plan:"$24.99/mes o $149.99/año",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1T-akrcF6JEveJI3rQDTNshc6RFRpSfYg/preview"},
+  {id:72,n:72,name:"Speechling",cats:["Educación e Idiomas"],desc:"Práctica de idiomas con retroalimentación IA + coaches humanos certificados. ONG 501(c)(3) con becas.",url:"https://speechling.com",tags:["idiomas","pronunciación","práctica","ong","becas"],plan:"Free / Unlimited $19.99/mes",modelo:"IA + coaches humanos",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1RSfk7bPnkU7mVFB7HT6vPW623KL_Iw71/preview"},
+  {id:73,n:73,name:"LoviSkin",cats:["Salud y Bienestar"],desc:"Análisis de piel con IA para cuidado personalizado. Datos biométricos sensibles — revisar política de privacidad.",url:"https://lovi.care",tags:["piel","salud","cuidado","análisis","biométrico"],plan:"Free / Premium plans",modelo:"Computer Vision",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1CgCrR-AAg0jzzIwsNJp0GGwewONsl63Q/preview"},
+  {id:74,n:74,name:"ZeroGPT",cats:["Ética y Detección de IA"],desc:"Detector de texto generado por IA. Falsos positivos frecuentes — nunca usar como evidencia única.",url:"https://www.zerogpt.com",tags:["detector","ia","plagio","texto","falsos-positivos"],plan:"Free / Premium $9.99/mes",modelo:"ZeroGPT Detector",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1cAU76dMSBQRPU4gxwwh9QuIxCzaQdpKs/preview"},
+
+  // ── Herramientas extra (fichas encontradas en Drive) ──
+  {id:75,n:75,name:"Microsoft Copilot",cats:["Asistentes Conversacionales","Productividad y Organización"],desc:"IA de Microsoft integrada en Office 365, Teams, Outlook y Windows. Redacción, resúmenes, análisis de datos y automatización dentro del ecosistema Microsoft.",url:"https://copilot.microsoft.com",tags:["microsoft","office","teams","outlook","word","excel","productividad"],plan:"Incluido en Microsoft 365 Business / Personal $6.99/mes",modelo:"GPT-4o (Azure OpenAI)",contexto:"128K tokens",fichaPdf:"https://drive.google.com/file/d/1ZGXJy1GITF7alBTuioA9CFSJh9EkXjmT/preview"},
+  {id:76,n:76,name:"Freepik",cats:["Generación de Imagen con IA","Diseño y Creatividad Visual"],desc:"Plataforma de recursos gráficos con IA generativa: imágenes, vectores, mockups, plantillas y generador de imágenes AI integrado.",url:"https://www.freepik.com",tags:["imagen","vectores","diseño","mockups","plantillas","recursos","ai-generativa"],plan:"Free (con marca de agua) / Premium desde $9/mes",modelo:"IA propia + Flux",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1O-IBYxv-qUfOzkUoxLWtb_Lnri55hP7J/preview"},
+  {id:77,n:77,name:"Genspark",cats:["Investigación y Análisis","Buscadores y Directorios de IA"],desc:"Motor de búsqueda con IA que genera 'Sparkpages' — páginas de respuesta personalizadas que sintetizan múltiples fuentes en tiempo real.",url:"https://www.genspark.ai",tags:["búsqueda","sparkpages","investigación","tiempo-real","síntesis"],plan:"Free / Plus $9.99/mes",modelo:"Múltiples LLMs",contexto:"Variable",fichaPdf:"https://drive.google.com/file/d/1QsUpppgZ0VwygAah5jUoans-NKC6JyBq/preview"},
+  {id:78,n:78,name:"Kensho",cats:["Investigación y Análisis"],desc:"Plataforma de IA para análisis financiero e inteligencia de mercados de S&P Global. Extracción de datos no estructurados y análisis de eventos.",url:"https://www.kensho.com",tags:["finanzas","análisis","s&p","mercados","datos","enterprise"],plan:"Enterprise (pricing custom)",modelo:"IA propia (S&P Global)",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1qaZvvJEUHloT6vd9wVZzH4XGbPDqF3Eb/preview"},
+  {id:79,n:79,name:"Anaplan",cats:["Productividad y Organización","Investigación y Análisis"],desc:"Plataforma de planificación empresarial conectada con IA para FP&A, cadena de suministro, ventas y RRHH. Líder en planificación colaborativa.",url:"https://www.anaplan.com",tags:["planificación","fp&a","enterprise","finanzas","forecast","supply-chain"],plan:"Enterprise (pricing custom)",modelo:"IA propia",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1LgqqazexiRqfTvUnWE2WHVzHCVqGkdB_/preview"},
+  {id:80,n:80,name:"DataRobot",cats:["Investigación y Análisis"],desc:"Plataforma enterprise de AutoML e IA para construir, desplegar y monitorear modelos predictivos sin ser data scientist.",url:"https://www.datarobot.com",tags:["automl","machine-learning","predicción","enterprise","modelos","datos"],plan:"Enterprise (pricing custom) / Free trial",modelo:"AutoML propio",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1PDELoxTpfYQ1BzRzPfAU0Ep42CuV4Brh/preview"},
+  {id:81,n:81,name:"AlphaSense",cats:["Investigación y Análisis"],desc:"Motor de inteligencia de mercado con IA para analistas financieros: búsqueda en filings, transcripts, research y noticias con NLP avanzado.",url:"https://www.alpha-sense.com",tags:["finanzas","inteligencia","mercado","nlp","research","transcripts","enterprise"],plan:"Enterprise (pricing custom)",modelo:"IA propia (NLP financiero)",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1eL2u3_-Av-DSFcrMlU9PExKvFUiS-yuc/preview"},
+  {id:82,n:82,name:"Ayasdi",cats:["Investigación y Análisis"],desc:"Plataforma de IA topológica para descubrimiento de patrones en datos complejos. Usada en banca, salud y gobierno para análisis de riesgo.",url:"https://www.ayasdi.com",tags:["topología","patrones","riesgo","banca","salud","datos-complejos"],plan:"Enterprise (pricing custom)",modelo:"TDA (Topological Data Analysis)",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1_QPdbZWLVsY-2ODdI_EzVYgrviKq6h_w/preview"},
+  {id:83,n:83,name:"ZestAI",cats:["Investigación y Análisis"],desc:"IA para suscripción de crédito: modelos de riesgo más precisos y explicables para instituciones financieras que quieren aprobar más préstamos de forma responsable.",url:"https://www.zest.ai",tags:["crédito","riesgo","finanzas","préstamos","underwriting","explicable"],plan:"Enterprise (pricing custom)",modelo:"IA propia (Credit ML)",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1zImX_3gTKrfMBW-xFmf-yBzG_KgsfKNE/preview"},
+  {id:84,n:84,name:"FinanceGPT",cats:["Investigación y Análisis"],desc:"Asistente IA especializado en análisis financiero: reportes, estados financieros, valoraciones y modelación con contexto del mercado.",url:"https://financegpt.ai",tags:["finanzas","análisis","reportes","valoración","estados-financieros","gpt"],plan:"Free / Pro $29/mes",modelo:"GPT-4 (fine-tuned finanzas)",contexto:"128K tokens",fichaPdf:"https://drive.google.com/file/d/1b_K-ceQUzMfazzjHL_8nP7jEhG2s_2Rr/preview"},
+  {id:85,n:85,name:"Antigravity",cats:["Desarrollo y Construcción de Apps","Automatización e Integración"],desc:"Plataforma para construir agentes de IA sin código: flujos agenticos, integraciones con APIs externas y despliegue de bots autónomos.",url:"https://www.antigravity.ai",tags:["agentes","no-code","bots","automatización","apis","flujos"],plan:"Free / Pro $49/mes",modelo:"GPT-4, Claude",contexto:"Variable",fichaPdf:"https://drive.google.com/file/d/1DT8o6W9WDQ_pv2v_oAmvmNAHGlp1VkrC/preview"},
+
+  {id:86,n:86,name:"Cursor",cats:["Desarrollo y Construcción de Apps"],desc:"IDE completo fork de VS Code rediseñado para IA. Tab completion predictivo, Agent Mode multiarchivo, Cloud Agents. $2B ARR, 64% Fortune 500. 1M+ suscriptores pagados.",url:"https://cursor.com",tags:["ide","vscode","agente","coding","tab-completion","cloud-agents","fork"],plan:"Free / Pro $20 / Pro+ $60 / Ultra $200/mes",modelo:"Claude Sonnet, GPT-4o, GPT-5 (Auto mode)",contexto:"Codebase completo indexado",fichaPdf:"https://drive.google.com/file/d/1tfLvzeysOtnfQriZWHJPt7kF7Mf0pWUr/preview"},
+  {id:87,n:87,name:"GitHub Copilot",cats:["Desarrollo y Construcción de Apps"],desc:"Asistente de código de Microsoft/OpenAI. Inline completion en VS Code, JetBrains, Neovim. Agent Mode, AI Credits desde jun 2026. 15M+ developers. Indemnización IP en Business.",url:"https://github.com/features/copilot",tags:["github","microsoft","openai","coding","inline","ide","indemnizacion-ip","ai-credits"],plan:"Free / Pro $10 / Pro+ $39 / Max $100 / Business $19/seat / Enterprise $39/seat/mes",modelo:"GPT-4o, Claude Sonnet, Gemini Flash",contexto:"Repositorio GitHub",fichaPdf:"https://drive.google.com/file/d/1rd8EP9LMr8Wh_s-s9TQwAu3T8-sWVTeX/preview"},
+  {id:88,n:88,name:"v0 by Vercel",cats:["Educación e Idiomas","Desarrollo y Construcción de Apps","Diseño y Creatividad Visual"],desc:"Generador de UI React/Next.js/Tailwind desde texto o screenshot. 6M+ developers. Deploy a Vercel en un clic. UI Quality 9.5/10. Git panel y sandbox full-stack desde 2026.",url:"https://v0.dev",tags:["ui","react","nextjs","tailwind","shadcn","vercel","frontend","deploy","figma","recurso-didáctico","interactivo","e-learning","app-educativa","no-code","vibe-coding","ui-educativa"],plan:"Free ($5 créditos) / Premium $20 / Team $30/user / Business $100/user/mes",modelo:"Modelos Vercel (Claude/GPT base)",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1O7cV6qWwNbRkip6gKi0j1FYaUz2auXAq/preview"},
+  {id:89,n:89,name:"Dify",cats:["Desarrollo y Construcción de Apps","Automatización e Integración"],desc:"Plataforma open-source para construir apps LLM sin código: chatbots, agentes RAG, workflows visuales. 60K+ GitHub stars. 1M+ apps. Self-hosting gratuito (Apache 2.0).",url:"https://dify.ai",tags:["open-source","rag","workflow","agentes","self-hosted","llm","no-code","mcp"],plan:"Self-hosted gratis / Cloud Pro $59 / Team $159/mes",modelo:"200+ modelos: GPT, Claude, Gemini, Llama, Ollama",contexto:"Variable (RAG)",fichaPdf:"https://drive.google.com/file/d/1gjs_BbSR94ZQPAbY4uvn_h6L_KnYS9ks/preview"},
+  {id:90,n:90,name:"Cohere",cats:["Investigación y Análisis","Desarrollo y Construcción de Apps"],desc:"IA enterprise para sectores regulados. Despliegue en VPC propia o on-prem. Grounding spans auditables. Command R7B a $0.04/M tokens. Fundadores: co-autores del Transformer.",url:"https://cohere.com",tags:["enterprise","vpc","rag","grounding","regulado","banca","salud","on-premises","api"],plan:"Trial gratis / Command R7B $0.04/M / Command R+ $2.50/M input / North custom",modelo:"Command A, Command R+, R7B, Embed v4, Rerank v3.5",contexto:"128K tokens",fichaPdf:"https://drive.google.com/file/d/1xHnCgfrDWj5PZ4xRvvKwLQ4mQCz_wrVx/preview"},
+  {id:91,n:91,name:"Kling AI",cats:["Generación de Video con IA"],desc:"Generador de video de Kuaishou. #1 benchmark ELO jul 2026. Kling 3.0: 4K nativo, audio multilingüe, Motion Control cinematográfico, Avatar 2.0. 60M+ creadores.",url:"https://klingai.com",tags:["video","kuaishou","4k","motion-control","avatar","lip-sync","chino","comercial"],plan:"Free 66 créditos/día / Standard $6.99 / Pro $19.99 / Premier $60 / Ultra $128/mes",modelo:"Kling 3.0 / Kling Omni Video O3",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1vXKNBfO4_64ogxXOFkB73LoNTv0e5KJi/preview"},
+  {id:92,n:92,name:"Adobe Firefly",cats:["Generación de Imagen con IA","Diseño y Creatividad Visual"],desc:"IA generativa de Adobe entrenada en contenido licenciado. Indemnización IP, Generative Fill en Photoshop, Generative Expand, Content Credentials. Comercialmente seguro.",url:"https://firefly.adobe.com",tags:["adobe","imagen","photoshop","illustrator","generative-fill","ip","comercial","content-credentials"],plan:"Free 25 créditos / Standard $9.99 / Pro $19.99 / Premium $199.99/mes",modelo:"Firefly Image 4, Firefly Video",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1OJn8XrlBW5-POCJtTJ1HQmTV5RbGJmd3/preview"},
+  {id:93,n:93,name:"Microsoft Copilot",cats:["Asistentes Conversacionales","Productividad y Organización"],desc:"IA de Microsoft en Word, Excel, PowerPoint, Outlook y Teams con acceso al Microsoft Graph (emails, documentos y reuniones de la organización).",url:"https://microsoft.com/copilot",tags:["microsoft","office","word","excel","teams","outlook","graph","enterprise","365"],plan:"Chat gratis / M365 Personal $9.99 / Copilot Business $18/seat / M365 Copilot $30/seat/mes",modelo:"GPT-4o (Azure OpenAI)",contexto:"Microsoft Graph (datos org)",fichaPdf:"https://drive.google.com/file/d/1GErZokqHCKo5paaEaWO6efIx_mL84q2J/preview"},
+  {id:94,n:94,name:"Ideogram",cats:["Generación de Imagen con IA"],desc:"Líder en texto dentro de imágenes: 90-95% precisión vs 30-40% de Midjourney. Magic Prompt, Batch Generation, plan Free 10 prompts/día. Ex-Google Brain. $80M a16z.",url:"https://ideogram.ai",tags:["imagen","texto","tipografia","poster","infografia","diseno","batch","magic-prompt"],plan:"Free 10 prompts/día / Basic $7 / Plus $15-20 / Pro $42-48/mes",modelo:"Ideogram 3.0",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/1DMQ57acbzzl3-GJVBsLNoLWMBKEr0c8I/preview"},
+  {id:95,n:95,name:"Pika Labs",cats:["Generación de Video con IA"],desc:"Video creativo y rápido. Pikaffects (derretir, explotar, inflar), Pikaformances lip sync, generación en menos de 90 seg. App social iOS. 16M+ usuarios. $135M levantados.",url:"https://pika.art",tags:["video","pikaffects","lip-sync","efectos","social","ios","redes","creativo"],plan:"Free / Basic $8 (watermark, sin derechos comerciales) / Standard $28 / Fancy $76-95/mes",modelo:"Pika 2.5",contexto:"N/A",fichaPdf:"https://drive.google.com/file/d/15_lV57Ir_OyKx8N2eS2G5ZW1oIsX9LGI/preview"},
+];
+
+// ════════════════════════════════════════════════════════
+//  21 TÉCNICAS DEL MANUAL KINGALA
+// ════════════════════════════════════════════════════════
+
+const TECNICAS = [
+  // Cat A
+  {id:"A1",cat:"A",catLabel:"Basadas en Ejemplos",name:"Zero-Shot Prompting",
+   desc:"Instrucción directa sin ejemplos. El modelo usa su conocimiento pre-entrenado para ejecutar la tarea.",
+   uso:"Tareas simples y bien definidas: clasificación, traducción, resumen corto.",
+   ejemplo:"Clasifica el sentimiento de este texto como positivo, negativo o neutro: [texto]",
+   impacto:"+20-40% vs prompt vago",keywords:["simple","clasificar","traducir","resumir","rápido"]},
+  {id:"A2",cat:"A",catLabel:"Basadas en Ejemplos",name:"One-Shot Prompting",
+   desc:"Un único ejemplo del resultado esperado actúa como referencia de formato, tono y profundidad.",
+   uso:"Formato de salida específico pero simple. Cuando zero-shot produce resultados inconsistentes.",
+   ejemplo:"Ejemplo:\nInput: [muestra]\nOutput: [resultado esperado]\n\nAhora procesa: [tu input]",
+   impacto:"+15-30% en consistencia de formato",keywords:["ejemplo","formato","tono","consistente","patrón"]},
+  {id:"A3",cat:"A",catLabel:"Basadas en Ejemplos",name:"Few-Shot Prompting",
+   desc:"2-5 ejemplos que demuestran el patrón entrada-salida. Una de las técnicas más efectivas para consistencia.",
+   uso:"Clasificación, extracción de datos, generación con estilo uniforme, estandarización de outputs.",
+   ejemplo:"[Ejemplo 1] Input → Output\n[Ejemplo 2] Input → Output\n[Ejemplo 3] Input → Output\nAhora: [tu input] →",
+   impacto:"+30-50% en consistencia",keywords:["ejemplos","múltiples","estandarizar","clasificar","patrón","uniforme"]},
+  // Cat B
+  {id:"B1",cat:"B",catLabel:"Razonamiento",name:"Chain-of-Thought (CoT)",
+   desc:"Instruye al modelo a razonar paso a paso antes de responder. Evita saltos que producen errores.",
+   uso:"Problemas matemáticos, lógicos, análisis estratégico, cualquier tarea multi-paso.",
+   ejemplo:"Razona paso a paso:\n1. Primero identifica [elemento A]\n2. Luego calcula [operación B]\n3. Finalmente concluye [resultado]",
+   impacto:"Mejora significativa en razonamiento",keywords:["paso","razonar","lógico","matemático","análisis","calcular","estratégico"]},
+  {id:"B2",cat:"B",catLabel:"Razonamiento",name:"Tree-of-Thoughts (ToT)",
+   desc:"Explora múltiples caminos de solución simultáneamente, evaluando cuál es más prometedor antes de continuar.",
+   uso:"Problemas con múltiples soluciones posibles, decisiones estratégicas, planificación.",
+   ejemplo:"Considera tres enfoques diferentes:\nCamino A: [ventajas / desventajas]\nCamino B: [ventajas / desventajas]\nCamino C: [ventajas / desventajas]\nEvalúa y selecciona el mejor con justificación.",
+   impacto:"Superior a CoT en tareas creativas",keywords:["alternativas","opciones","estrategia","planificación","decisión","explorar","caminos"]},
+  {id:"B3",cat:"B",catLabel:"Razonamiento",name:"Self-Consistency",
+   desc:"Genera múltiples caminos de razonamiento independientes y selecciona la respuesta más consistente.",
+   uso:"Decisiones críticas, validación cruzada, problemas donde un error tiene consecuencias graves.",
+   ejemplo:"Resuelve el problema usando tres enfoques diferentes y compara:\nEnfoque 1: [método A]\nEnfoque 2: [método B]\nEnfoque 3: [método C]\nRespuesta final basada en consenso:",
+   impacto:"Mayor fiabilidad en decisiones críticas",keywords:["validar","crítico","verificar","consenso","fiable","precisión","importante"]},
+  {id:"B4",cat:"B",catLabel:"Razonamiento",name:"Step-Back Prompting",
+   desc:"Abstrae a conceptos de alto nivel ANTES de responder la pregunta específica. Fundamento teórico primero.",
+   uso:"Tareas de conocimiento intensivo, diseño de soluciones complejas, razonamiento multi-salto.",
+   ejemplo:"Paso 1: ¿Cuáles son los principios fundamentales de [campo/disciplina] aplicables a este caso?\nPaso 2: Basándote en esos principios, responde: [tu pregunta específica]",
+   impacto:"+27% en razonamiento abstracto (DeepMind)",keywords:["principios","fundamentos","teórico","abstracto","profundo","conceptos","base"]},
+  {id:"B5",cat:"B",catLabel:"Razonamiento",name:"Program-of-Thought (PoT)",
+   desc:"Expresa el razonamiento como código ejecutable (Python) para eliminar errores aritméticos.",
+   uso:"Cálculos numéricos precisos: ROI, presupuestos, estadísticas, modelos financieros.",
+   ejemplo:"Calcula [problema] expresando el razonamiento como código Python ejecutable que calcule:\n1. [variable A]\n2. [variable B]\n3. [resultado final]",
+   impacto:"+12% en precisión sobre CoT en cálculos",keywords:["calcular","números","matemática","roi","presupuesto","financiero","estadística","costo"]},
+  // Cat C
+  {id:"C1",cat:"C",catLabel:"Estructuración y Control",name:"Role-Based Prompting",
+   desc:"Asigna una identidad profesional específica para maximizar vocabulario de dominio, tono y metodología.",
+   uso:"Consultoría, análisis técnico, generación de documentos con tono institucional.",
+   ejemplo:"Actúa como [perfil experto] con [N] años de experiencia en [campo]. Tu enfoque combina [metodología A] y [metodología B]. [Tarea específica]",
+   impacto:"Mayor rigor analítico y vocabulario especializado",keywords:["experto","especialista","consultor","profesional","rol","institucional","técnico","analista"]},
+  {id:"C2",cat:"C",catLabel:"Estructuración y Control",name:"Directional Stimulus (DSP)",
+   desc:"Incorpora señales o pistas obligatorias en el prompt para orientar al modelo hacia elementos específicos.",
+   uso:"Documentos con requisitos no negociables: métricas regulatorias, terminología normativa.",
+   ejemplo:"[Instrucción base]\nPistas direccionales:\n- Incluir obligatoriamente: [métrica 1], [métrica 2]\n- Tono: [especificación]\n- Extensión: [límite]\n- Debe cerrar con: [elemento específico]",
+   impacto:"Reduce drásticamente la iteración post-respuesta",keywords:["obligatorio","requisitos","incluir","específico","normativo","métrica","regulatorio","cumplimiento"]},
+  {id:"C3",cat:"C",catLabel:"Estructuración y Control",name:"Framework COSTAR",
+   desc:"Marco de 6 componentes: Contexto, Objetivo, eStilo, Tono, Audiencia, Respuesta. Ganó el GPT-4 Competition 2023.",
+   uso:"Documentos institucionales, comunicaciones con stakeholders, cualquier output de alta calidad.",
+   ejemplo:"# CONTEXTO #\n[situación actual y antecedentes]\n# OBJETIVO #\n[qué necesitas lograr]\n# ESTILO #\n[cómo escribir]\n# TONO #\n[registro emocional]\n# AUDIENCIA #\n[para quién]\n# FORMATO DE RESPUESTA #\n[estructura del output]",
+   impacto:"Outputs consistentemente más alineados",keywords:["documento","informe","propuesta","stakeholder","presentación","ejecutivo","comunicación","formal"]},
+  {id:"C4",cat:"C",catLabel:"Estructuración y Control",name:"Emotion Prompting",
+   desc:"Añade estímulos emocionales al final del prompt. Activa patrones de exhaustividad en el modelo.",
+   uso:"Tareas que requieren máxima precisión y profundidad. Combina con cualquier otra técnica.",
+   ejemplo:"[Tu prompt principal aquí]\n\nEsto es muy importante para mi carrera. Por favor sé exhaustivo y riguroso. Aborda este desafío como una oportunidad para demostrar excelencia.",
+   impacto:"+115% en BIG-Bench, +10.9% en tareas generativas",keywords:["exhaustivo","riguroso","importante","precisión","profundo","detallado","excelencia","completo"]},
+  // Cat D
+  {id:"D1",cat:"D",catLabel:"Flujo y Composición",name:"Prompt Chaining",
+   desc:"Divide tareas complejas en secuencia de prompts conectados. La salida de uno alimenta al siguiente.",
+   uso:"Workflows multi-etapa: investigación → análisis → recomendación → plan → documento.",
+   ejemplo:"Paso 1: '[Primera subtarea específica]'\n→ [output 1]\n\nPaso 2: 'Usando el resultado anterior, ahora [segunda subtarea]'\n→ [output 2]\n\nPaso 3: 'Sintetiza ambos en [formato final]'",
+   impacto:"Calidad muy superior a un solo prompt masivo",keywords:["workflow","proceso","etapas","secuencia","complejo","multi-paso","proyecto","plan"]},
+  {id:"D2",cat:"D",catLabel:"Flujo y Composición",name:"Iterative Prompting",
+   desc:"Refina progresivamente las respuestas mediante ciclos de evaluación y retroalimentación.",
+   uso:"Documentos de alta exigencia, análisis estratégicos, cualquier output que empieza como borrador.",
+   ejemplo:"Prompt 1: '[Tarea inicial]'\nPrompt 2: 'Revisa el resultado anterior. [Elemento X] es demasiado genérico: hazlo específico con [datos]. [Aspecto Y] no considera [contexto]: agrégalo.'\nPrompt 3: 'Sintetiza en [formato final con los requisitos]'",
+   impacto:"Resultado final consistentemente superior",keywords:["revisar","mejorar","refinar","borrador","iterar","perfeccionar","ajustar","editar"]},
+  {id:"D3",cat:"D",catLabel:"Flujo y Composición",name:"Generated Knowledge",
+   desc:"Pide al modelo que genere conocimiento relevante ANTES de responder la pregunta principal.",
+   uso:"Preguntas complejas sin documentos externos disponibles. Reduce respuestas superficiales.",
+   ejemplo:"Antes de responder, genera [N] hechos relevantes sobre [tema] que apliquen a este caso:\n[El modelo genera los hechos]\n\nAhora, basándote en ese conocimiento, responde: [pregunta principal]",
+   impacto:"Mayor profundidad y fundamentación",keywords:["contexto","conocimiento","información","background","investigar","aprender","datos","hechos"]},
+  {id:"D4",cat:"D",catLabel:"Flujo y Composición",name:"Rephrase and Respond (RaR)",
+   desc:"El modelo reformula y amplía tu pregunta antes de responderla. Revela ambigüedades implícitas.",
+   uso:"Prompts cortos o ambiguos. Análisis donde los supuestos deben ser explícitos.",
+   ejemplo:"Antes de responder, reformula esta pregunta haciéndola más específica y completa, considerando todas las dimensiones relevantes. Luego responde la versión reformulada:\n[Tu pregunta original]",
+   impacto:"+10% en precisión en 10 benchmarks (UCLA)",keywords:["aclarar","ambiguo","reformular","específico","vago","incompleto","supuestos","interpretar"]},
+  // Cat E
+  {id:"E1",cat:"E",catLabel:"Agentes y Sistemas",name:"ReAct (Reasoning + Acting)",
+   desc:"Ciclo iterativo de pensamiento → acción → observación. Reduce alucinaciones al anclar en datos reales.",
+   uso:"Tareas con datos externos, flujos agénticos, investigación que requiere verificación factual.",
+   ejemplo:"Tarea: [objetivo]\n\nPensamiento 1: Necesito [dato/recurso X]\nAcción 1: [buscar/consultar X]\nObservación 1: [resultado]\n\nPensamiento 2: Ahora puedo [análisis basado en observación]\nAcción 2: [siguiente paso]\nRespuesta final: [conclusión fundamentada]",
+   impacto:"Reducción significativa de alucinaciones",keywords:["buscar","verificar","agente","herramientas","datos-reales","investigar","acción","tiempo-real"]},
+  {id:"E2",cat:"E",catLabel:"Agentes y Sistemas",name:"RAG (Retrieval Augmented Generation)",
+   desc:"Combina el modelo con fuentes de conocimiento externas. El prompt incluye los documentos relevantes.",
+   uso:"Respuestas ancladas en documentos institucionales. Dominios donde la precisión es no negociable.",
+   ejemplo:"Basándote EXCLUSIVAMENTE en los siguientes documentos:\n<documentos>\n[contenido de tus fuentes]\n</documentos>\n\nResponde: [pregunta específica]. Cita las secciones relevantes. Si la información no está en los documentos, indícalo explícitamente.",
+   impacto:"Elimina alucinaciones en dominios especializados",keywords:["documentos","fuentes","normativa","regulación","citar","verificable","institucional","exacto"]},
+  {id:"E3",cat:"E",catLabel:"Agentes y Sistemas",name:"Meta Prompting",
+   desc:"Usa al modelo para mejorar tus propios prompts antes de ejecutarlos.",
+   uso:"Inicio de proyectos, cuando los prompts actuales no funcionan, estandarizar en equipos.",
+   ejemplo:"Mi prompt actual es: '[tu prompt sin refinar]'\n\nSugiere una versión mejorada considerando:\n- ¿Qué contexto falta?\n- ¿Qué formato de salida sería más útil?\n- ¿Qué restricciones agregar?\n- ¿Qué técnica de prompting aplicarías?",
+   impacto:"Calidad sistémica en equipos",keywords:["mejorar","optimizar","prompt","aprender","estandarizar","equipo","plantilla","instrucción"]},
+  {id:"E4",cat:"E",catLabel:"Agentes y Sistemas",name:"Chain-of-Verification (CoVe)",
+   desc:"4 pasos: genera respuesta → planifica preguntas de verificación → respóndelas independientemente → corrige.",
+   uso:"Contenido factual crítico: estadísticas, normativas, marcos teóricos, listas de referencia.",
+   ejemplo:"Paso 1: [Genera la respuesta inicial]\nPaso 2: Lista preguntas de verificación para cada dato clave: '¿Es correcto que [dato X]?'\nPaso 3: Responde cada pregunta SIN ver la respuesta del Paso 1\nPaso 4: Corrige la respuesta inicial según las verificaciones",
+   impacto:"Reducción significativa de alucinaciones factuales",keywords:["verificar","factual","exacto","datos","estadísticas","normas","corregir","validar","publicar"]},
+  {id:"E5",cat:"E",catLabel:"Agentes y Sistemas",name:"System 2 Attention (S2A)",
+   desc:"Filtra sesgos y opiniones del input ANTES de procesar. Mejora factualidad +17.5% y objetividad +57.4%.",
+   uso:"Análisis donde la neutralidad es crítica. Inputs con emociones o juicios de valor mezclados.",
+   ejemplo:"Paso 1 — Depuración: Lee el siguiente input y extrae ÚNICAMENTE los datos objetivos y verificables, eliminando todas las opiniones, juicios de valor y ruido emocional:\n[input original]\n\nPaso 2 — Análisis: Basándote solo en los datos extraídos, proporciona una evaluación imparcial y recomendaciones basadas en evidencia.",
+   impacto:"+57.4% en objetividad (Meta AI)",keywords:["objetivo","neutral","imparcial","sesgo","opinión","datos","análisis","evaluación","evidencia"]},
+];
+
+// ════════════════════════════════════════════════════════
+//  KEYWORDS PARA SUGERIDOR
+// ════════════════════════════════════════════════════════
+
+const KW_CATS = {
+  // ── Educación y recursos didácticos ──────────────────────────────────
+  'recurso didác': ["Educación e Idiomas","Desarrollo y Construcción de Apps","Diseño y Creatividad Visual"],
+  'recurso didact': ["Educación e Idiomas","Desarrollo y Construcción de Apps","Diseño y Construcción de Apps"],
+  'didáctico':    ["Educación e Idiomas","Desarrollo y Construcción de Apps","Diseño y Creatividad Visual"],
+  'didactico':    ["Educación e Idiomas","Desarrollo y Construcción de Apps","Diseño y Creatividad Visual"],
+  'material educ':["Educación e Idiomas","Diseño y Creatividad Visual","Desarrollo y Construcción de Apps"],
+  'e-learning':   ["Educación e Idiomas","Desarrollo y Construcción de Apps"],
+  'elearning':    ["Educación e Idiomas","Desarrollo y Construcción de Apps"],
+  'aprendizaje':  ["Educación e Idiomas","Diseño y Creatividad Visual"],
+  'curso':        ["Educación e Idiomas","Diseño y Creatividad Visual","Desarrollo y Construcción de Apps"],
+  'capacitaci':   ["Educación e Idiomas","Diseño y Creatividad Visual","Productividad y Organización"],
+  'formación':    ["Educación e Idiomas","Diseño y Creatividad Visual"],
+  'formacion':    ["Educación e Idiomas","Diseño y Creatividad Visual"],
+  'estudiante':   ["Educación e Idiomas"],
+  'alumno':       ["Educación e Idiomas"],
+  'docente':      ["Educación e Idiomas"],
+  'profesor':     ["Educación e Idiomas"],
+  'clase':        ["Educación e Idiomas","Diseño y Creatividad Visual"],
+  'lección':      ["Educación e Idiomas","Diseño y Creatividad Visual"],
+  'leccion':      ["Educación e Idiomas","Diseño y Creatividad Visual"],
+  'quiz':         ["Educación e Idiomas","Formularios y Publicación","Desarrollo y Construcción de Apps"],
+  'evaluación':   ["Educación e Idiomas","Formularios y Publicación"],
+  'evaluacion':   ["Educación e Idiomas","Formularios y Publicación"],
+  'interactivo':  ["Desarrollo y Construcción de Apps","Educación e Idiomas","Diseño y Creatividad Visual"],
+  'interactiva':  ["Desarrollo y Construcción de Apps","Educación e Idiomas","Diseño y Creatividad Visual"],
+  'vibe coding':  ["Desarrollo y Construcción de Apps","Educación e Idiomas"],
+  'vibe-coding':  ["Desarrollo y Construcción de Apps","Educación e Idiomas"],
+  'app educativ': ["Desarrollo y Construcción de Apps","Educación e Idiomas"],
+  'juego educativo':["Desarrollo y Construcción de Apps","Educación e Idiomas"],
+  'gamificac':    ["Desarrollo y Construcción de Apps","Educación e Idiomas"],
+  'mapa mental':  ["Diseño y Creatividad Visual","Educación e Idiomas"],
+  'mapa conceptual':["Diseño y Creatividad Visual","Educación e Idiomas"],
+  'infografía':   ["Diseño y Creatividad Visual","Educación e Idiomas"],
+  'infografia':   ["Diseño y Creatividad Visual","Educación e Idiomas"],
+  'diseño instruc':["Educación e Idiomas","Diseño y Creatividad Visual"],
+  // ── Presentaciones y contenido visual ────────────────────────────────
+  'presentac':    ["Diseño y Creatividad Visual","Productividad y Organización","Educación e Idiomas"],
+  'slide':        ["Diseño y Creatividad Visual","Educación e Idiomas"],
+  // ── Video ─────────────────────────────────────────────────────────────
+  'video':        ["Generación de Video con IA","Edición de Video"],
+  'editar video': ["Edición de Video"],
+  // ── Imagen ────────────────────────────────────────────────────────────
+  'imagen':       ["Generación de Imagen con IA","Diseño y Creatividad Visual"],
+  'diseño':       ["Diseño y Creatividad Visual"],
+  'logo':         ["Diseño y Creatividad Visual","Marketing y Atención al Cliente"],
+  // ── Audio y música ────────────────────────────────────────────────────
+  'música':       ["Generación de Audio y Música"],
+  'musica':       ["Generación de Audio y Música"],
+  'canción':      ["Generación de Audio y Música"],
+  'voz':          ["Generación de Audio y Música"],
+  'audio':        ["Generación de Audio y Música"],
+  'podcast':      ["Generación de Audio y Música","Productividad y Organización","Educación e Idiomas"],
+  // ── Marketing y ventas ────────────────────────────────────────────────
+  'chatbot':      ["Marketing y Atención al Cliente","Asistentes Conversacionales"],
+  'marketing':    ["Marketing y Atención al Cliente","Diseño y Creatividad Visual"],
+  'venta':        ["Marketing y Atención al Cliente"],
+  'lead':         ["Marketing y Atención al Cliente","Formularios y Publicación"],
+  'contenido':    ["Marketing y Atención al Cliente","Generación de Video con IA"],
+  'redes':        ["Generación de Video con IA","Marketing y Atención al Cliente","Diseño y Creatividad Visual"],
+  'landing':      ["Marketing y Atención al Cliente","Diseño y Creatividad Visual"],
+  // ── Automatización ────────────────────────────────────────────────────
+  'automatiz':    ["Automatización e Integración"],
+  'flujo':        ["Automatización e Integración"],
+  'integr':       ["Automatización e Integración"],
+  // ── Desarrollo ────────────────────────────────────────────────────────
+  'código':       ["Desarrollo y Construcción de Apps"],
+  'programar':    ["Desarrollo y Construcción de Apps"],
+  'app':          ["Desarrollo y Construcción de Apps"],
+  'aplicación':   ["Desarrollo y Construcción de Apps"],
+  'web':          ["Desarrollo y Construcción de Apps","Marketing y Atención al Cliente"],
+  // ── Análisis e investigación ──────────────────────────────────────────
+  'analiz':       ["Investigación y Análisis"],
+  'investigar':   ["Investigación y Análisis","Buscadores y Directorios de IA"],
+  'document':     ["Investigación y Análisis"],
+  // ── Formularios ───────────────────────────────────────────────────────
+  'formulario':   ["Formularios y Publicación"],
+  'encuesta':     ["Formularios y Publicación"],
+  'publicar':     ["Formularios y Publicación"],
+  // ── Idiomas ───────────────────────────────────────────────────────────
+  'idioma':       ["Educación e Idiomas"],
+  'inglés':       ["Educación e Idiomas"],
+  'ingles':       ["Educación e Idiomas"],
+  'pronunciar':   ["Educación e Idiomas"],
+  // ── Productividad ─────────────────────────────────────────────────────
+  'reunión':      ["Productividad y Organización"],
+  'reunion':      ["Productividad y Organización"],
+  'email':        ["Productividad y Organización"],
+  'correo':       ["Productividad y Organización"],
+  'notas':        ["Productividad y Organización"],
+  // ── Otros ─────────────────────────────────────────────────────────────
+  'shorts':       ["Edición de Video","Generación de Video con IA"],
+  'clips':        ["Edición de Video"],
+  'subtítulo':    ["Edición de Video"],
+  'avatar':       ["Avatares y Caricaturización","Generación de Video con IA"],
+  'piel':         ["Salud y Bienestar"],
+  'detectar ia':  ["Ética y Detección de IA"],
+  'buscar herramienta':["Buscadores y Directorios de IA"],
+};
+
+// Prompts por herramienta con técnica asignada
+const PROMPTS_DB = {
+  "ChatGPT":    {tecnica:"COSTAR",prompt:"# CONTEXTO #\n[Describe tu situación actual]\n# OBJETIVO #\n[Qué resultado concreto necesitas]\n# ESTILO #\n[Experto en X con N años de experiencia]\n# TONO #\n[Profesional / Estratégico / Didáctico]\n# AUDIENCIA #\n[Para quién es este output]\n# FORMATO DE RESPUESTA #\n[Bullet points / Tabla / Párrafos / N palabras]"},
+  "Claude":     {tecnica:"Chain-of-Thought",prompt:"Actúa como [experto en el tema]. Necesito que [tarea específica]. Razona paso a paso:\n1. Primero analiza [aspecto A]\n2. Luego considera [aspecto B]\n3. Finalmente sintetiza en [formato deseado]\n\nContexto relevante: [información necesaria]\n\nEsto es muy importante. Por favor sé exhaustivo."},
+  "Gemini":     {tecnica:"Step-Back Prompting",prompt:"Paso 1 — Principios: ¿Cuáles son los principios fundamentales de [campo] más relevantes para este caso?\n\nPaso 2 — Aplicación: Basándote en esos principios, [tarea específica] considerando [contexto]. Formato: [estructura deseada].\n\nUsa Deep Research si necesitas información actualizada."},
+  "Perplexity": {tecnica:"RAG",prompt:"Busca fuentes actualizadas de [año actual] sobre [tema específico]. Necesito:\n1. [Información A con citas verificables]\n2. [Información B con fuentes]\n3. [Comparativa entre X e Y]\n\nFormato: [tabla / bullet points / resumen ejecutivo]. Incluye las URLs de las fuentes más relevantes."},
+  "Canva":      {tecnica:"Role-Based",prompt:"Actúa como diseñador gráfico senior de marca. Crea un [tipo de pieza: presentación/post/infografía] para [plataforma/uso]. \n\nEspecificaciones:\n- Audiencia: [perfil]\n- Mensaje principal: [concepto]\n- Paleta de colores: [colores o estilo]\n- Tono visual: [moderno / corporativo / creativo]\n- Elementos obligatorios: [logo, CTA, etc.]\n- Formato: [dimensiones]"},
+  "Midjourney": {tecnica:"Directional Stimulus",prompt:"[Descripción detallada del sujeto principal], [contexto/escenario], [estilo artístico: fotorrealista/ilustración/acuarela/óleo], [iluminación: hora dorada/estudio/dramática], [composición: plano medio/primer plano/panorámica], [paleta de colores], [estado de ánimo], [artista de referencia opcional] --ar 16:9 --style raw --v 7 --q 2"},
+  "Suno":       {tecnica:"Few-Shot",prompt:"Género: [género musical]\nSubgénero: [estilo específico]\nTema/Narrativa: [sobre qué trata]\nEstado de ánimo: [emoción predominante]\nInstrumentos principales: [instrumentos]\nTempo: [lento/medio/rápido, BPM si sabes]\nEstructura: verso-coro-verso-coro-puente-coro\n\nLetra:\n[Verso 1]: [tu letra o déjalo vacío para que genere]\n[Coro]: [letra del coro]"},
+  "ElevenLabs": {tecnica:"Directional Stimulus",prompt:"Configuración de voz:\n- Tipo de voz: [femenina/masculina/neutra]\n- Edad aproximada: [joven/adulto/mayor]\n- Tono: [profesional/cálido/dinámico/narrativo]\n- Velocidad: [0.8-1.2x, donde 1.0 es normal]\n- Énfasis especial en: [palabras o frases clave]\n\nTexto a convertir:\n[Tu texto aquí — usa comas para pausas naturales]"},
+  "Runway":     {tecnica:"COSTAR",prompt:"Scene description: [descripción visual detallada de la escena]\nSubject: [qué o quién aparece]\nAction: [qué está haciendo/ocurriendo]\nCamera movement: [estático/zoom lento/travelling/drone]\nLighting: [diurno/nocturno/dramático/suave]\nStyle: [fotorrealista/cinemático/animado]\nMood: [emoción/atmósfera]\nDuration: [3-10 segundos]"},
+  "Zapier":     {tecnica:"Prompt Chaining",prompt:"Flujo de automatización a crear:\n\nTrigger: Cuando [evento en App A, ej: llega email con asunto X]\n\nFiltro (opcional): Solo si [condición, ej: contiene la palabra 'urgente']\n\nAcción 1: En [App B] → [acción específica]\nAcción 2: En [App C] → [acción específica]\n\nMapeo de datos: El campo [campo de origen] va al campo [campo destino]\n\nNotificación final: [dónde quieres el aviso]"},
+  "Make":       {tecnica:"Prompt Chaining",prompt:"Escenario de automatización:\n\nMódulo 1 (Trigger): [Evento inicial en servicio X]\nMódulo 2 (Filtro): Condición → si [campo] contiene [valor]\nMódulo 3 (Transformación): [operación sobre los datos]\nMódulo 4 (Acción): Crear/actualizar [registro] en [servicio Y]\nMódulo 5 (Notificación): Enviar [resumen] a [destino]\n\nManejo de errores: [qué hacer si falla]"},
+  "Bolt.new":   {tecnica:"Role-Based",prompt:"Actúa como desarrollador full-stack senior. Crea una aplicación web [tipo] con las siguientes especificaciones:\n\nFuncionalidades principales:\n1. [Feature A]\n2. [Feature B]\n3. [Feature C]\n\nStack requerido: React + TypeScript + [backend si aplica]\nAutenticación: [sí/no]\nBase de datos: [tipo de datos que manejas]\nDiseño: [minimalista/moderno/branded]\nDeploy: genera el código listo para producción"},
+  "Lovable":    {tecnica:"COSTAR",prompt:"# CONTEXTO #\nApp para [descripción del negocio/uso]\n# OBJETIVO #\nPermitir a los usuarios [acción principal de la app]\n# ESTILO #\nInterfaz [moderna/minimalista/colorida/corporativa]\n# TONO #\n[Profesional/Casual/Amigable]\n# AUDIENCIA #\n[Perfil de usuarios finales]\n# FUNCIONALIDADES #\n1. Autenticación de usuarios\n2. [Funcionalidad core 1]\n3. [Funcionalidad core 2]\n4. Dashboard con [métricas clave]"},
+  "HeyGen":     {tecnica:"Directional Stimulus",prompt:"Configuración de video:\n- Avatar: [tipo de presentador]\n- Idioma: [idioma principal]\n- Subtítulos: [sí/no, idioma]\n- Fondo: [color sólido / imagen / virtual office]\n- Tono de presentación: [formal/casual/motivacional]\n\nGuión:\n[Escribe aquí tu guión completo. Usa... para indicar pausas. Usa MAYÚSCULAS para énfasis. Máximo 5 minutos por video.]"},
+  "Gamma":      {tecnica:"Few-Shot",prompt:"Crea una presentación de [N] slides sobre [tema]. \n\nEstructura:\nSlide 1: Título + hook de apertura\nSlide 2-3: Contexto / El problema\nSlide 4-6: [Contenido principal en 3 secciones]\nSlide 7-8: Evidencia / Datos\nSlide 9: Llamada a la acción\nSlide 10: Cierre + próximos pasos\n\nAudiencia: [perfil]\nTono: [formal/inspiracional/educativo]\nIncluir: [datos clave, gráficas, CTAs]"},
+  "NotebookLM": {tecnica:"RAG",prompt:"[Sube tus documentos primero]\n\nUna vez cargados, pide:\n'Genera un Audio Overview de 10 minutos en español que explique [tema principal] a [audiencia]. Énfasis en: [aspecto 1] y [aspecto 2].'\n\nO para análisis:\n'¿Cuáles son las 5 ideas más importantes de mis fuentes sobre [tema]? Organiza la respuesta con citas específicas de página.'"},
+  "Replit AI":  {tecnica:"Chain-of-Thought",prompt:"Actúa como desarrollador senior. Necesito [descripción de la app/script/herramienta].\n\nRazona paso a paso:\n1. Define la arquitectura (qué componentes necesita)\n2. Selecciona el stack más apropiado del que tienes disponible\n3. Construye las funcionalidades en este orden: [core → auth → UI → deploy]\n\nLenguaje: [Python/JavaScript/otro]\nIntegraciones necesarias: [APIs o servicios externos]\nCuando termines, muéstrame cómo hacer el deploy."},
+  "Canva":       {tecnica:"COSTAR",prompt:"# CONTEXTO #\nRecurso educativo para [nivel/audiencia: primaria/secundaria/adultos/corporativo].\n# OBJETIVO #\nCrear un [tipo: infografía/presentación/póster/cartel/video] sobre [tema específico].\n# ESTILO #\nVisual educativo, claro y atractivo.\n# TONO #\n[Formal/Didáctico/Motivador/Accesible].\n# AUDIENCIA #\n[Descripción del estudiante o aprendiz].\n# FORMATO #\nIncluir: título visible, puntos clave, íconos ilustrativos, paleta coherente, espacio para notas/actividad."},
+  "Claude":      {tecnica:"Prompt Chaining",prompt:"Vamos a crear un recurso didáctico interactivo en etapas:\n\nPaso 1: Define el objetivo de aprendizaje específico y medible para [tema] con audiencia [perfil].\nPaso 2: Diseña la estructura del recurso (secciones, actividades, evaluación).\nPaso 3: Genera el contenido completo de cada sección.\nPaso 4: Crea un quiz de 5 preguntas de opción múltiple para verificar comprensión.\nPaso 5: Sugiere una actividad práctica de aplicación.\n\nEmpezamos: el tema es [tema] para [audiencia]."},
+  "Bolt.new":    {tecnica:"Role-Based",prompt:"Actúa como desarrollador educativo experto en e-learning. Crea una aplicación web interactiva para aprender [tema].\n\nFuncionalidades:\n1. Lección principal con [N] secciones de contenido\n2. Quiz interactivo de [N] preguntas con retroalimentación inmediata\n3. Barra de progreso del estudiante\n4. Pantalla de resultados con mensaje motivador\n5. Botón para repetir o compartir resultado\n\nDiseño: colores [paleta], estilo [moderno/educativo/gamificado].\nStack: React + TypeScript. Responsive para móvil."},
+  "Lovable":     {tecnica:"COSTAR",prompt:"# CONTEXTO #\nApp educativa interactiva para [tema] dirigida a [audiencia].\n# OBJETIVO #\nPermitir que el usuario aprenda y evalúe su comprensión de [tema] de forma autónoma.\n# ESTILO #\nDiseño [gamificado/minimalista/corporativo].\n# TONO #\nMotivador y accesible.\n# AUDIENCIA #\n[Perfil del aprendiz].\n# FUNCIONALIDADES #\n1. Módulo de contenido con [N] lecciones\n2. Actividades interactivas (arrastrar, seleccionar, completar)\n3. Evaluación final con calificación\n4. Certificado o badge de completado"},
+  "Gamma":       {tecnica:"Few-Shot",prompt:"Crea un recurso educativo de [N] slides sobre [tema].\n\nEstructura obligatoria:\nSlide 1: Título + objetivo de aprendizaje ('Al terminar podrás...')\nSlide 2-3: Contexto y por qué importa\nSlide 4-6: Conceptos clave (uno por slide, con ejemplo visual)\nSlide 7: Actividad de reflexión o ejercicio práctico\nSlide 8: Quiz de comprensión (3 preguntas)\nSlide 9: Resumen visual y recursos adicionales\nSlide 10: CTA o siguiente paso\n\nAudiencia: [perfil]. Tono: [didáctico/motivador]. Incluir íconos y datos concretos."},
+  "Kimi":        {tecnica:"Self-Consistency",prompt:"Analiza [tema/problema] usando tres perspectivas independientes:\n\nAnálisis 1 (enfoque cuantitativo): [datos y métricas]\nAnálisis 2 (enfoque cualitativo): [factores cualitativos]\nAnálisis 3 (enfoque comparativo): [benchmarks y alternativas]\n\nSíntesis: Identifica los puntos en que los tres análisis coinciden y presenta la conclusión más robusta.\n\n[Añade aquí el documento o contexto que quieres analizar — Kimi acepta archivos extensos]"},
+};
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+
+const S = {
+  search:'', activeCats:new Set(), activeTags:new Set(),
+  compareList:[], viewMode:'grid', currentView:'catalog',
+  activeTecCat:'all',
+};
+
+// ════════════════════════════════════════════════════════
+//  SIDEBAR
+// ════════════════════════════════════════════════════════
+
+function renderSidebar(){
+  const catCounts={};
+  TOOLS.forEach(t=>t.cats.forEach(c=>{catCounts[c]=(catCounts[c]||0)+1;}));
+  const filt=filteredTools();
+  const filtCC={};
+  filt.forEach(t=>t.cats.forEach(c=>{filtCC[c]=(filtCC[c]||0)+1;}));
+
+  document.getElementById('catFilters').innerHTML=
+    Object.entries(catCounts).sort((a,b)=>a[0].localeCompare(b[0])).map(([cat,total])=>{
+      const act=S.activeCats.has(cat);
+      const cnt=S.activeCats.size>0?(filtCC[cat]||0):total;
+      return `<div class="fi ${act?'active':''}" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')">
+        <div class="fi-left"><div class="fi-dot" style="background:${cc(cat)}"></div>
+        <span class="fi-label">${cat}</span></div>
+        <span class="fi-cnt">${cnt}</span></div>`;
+    }).join('');
+
+  const tagSet=new Set(TOOLS.flatMap(t=>t.tags));
+  document.getElementById('tagCloud').innerHTML=
+    [...tagSet].sort().slice(0,42).map(tg=>
+      `<span class="tc ${S.activeTags.has(tg)?'active':''}" onclick="toggleTag('${tg}')">${tg}</span>`
+    ).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  TOOLS
+// ════════════════════════════════════════════════════════
+
+function filteredTools(){
+  let list=TOOLS.filter(t=>{
+    const q=S.search.toLowerCase();
+    if(q&&!(t.name.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)||
+      t.tags.some(tg=>tg.includes(q))||t.cats.some(c=>c.toLowerCase().includes(q)))) return false;
+    if(S.activeCats.size>0&&!t.cats.some(c=>S.activeCats.has(c))) return false;
+    if(S.activeTags.size>0&&!t.tags.some(tg=>S.activeTags.has(tg))) return false;
+    return true;
+  });
+  const sort=document.getElementById('sortSel')?.value||'num';
+  if(sort==='name') list.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(sort==='cat') list.sort((a,b)=>(a.cats[0]||'').localeCompare(b.cats[0]||''));
+  else list.sort((a,b)=>a.n-b.n);
+  return list;
+}
+
+function cardHTML(t){
+  const isCmp=S.compareList.includes(t.id);
+  const color=cc(t.cats[0]||'');
+  const cats=t.cats.slice(0,3).map(c=>
+    `<span class="cat-pill" style="--cat-color:${cc(c)}">${c}</span>`).join('');
+  return `<div class="tool-card ${isCmp?'sel':''}" style="--cat-color:${color}" onclick="openModal(${t.id})">
+    <div class="tc-num">#${String(t.n).padStart(2,'0')}</div>
+    <div class="tc-name">${t.name}</div>
+    <div class="tc-desc">${t.desc.slice(0,88)}${t.desc.length>88?'…':''}</div>
+    <div class="tc-cats">${cats}</div>
+    <div class="tc-foot">
+      <a class="tc-link" href="${t.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗ Ver</a>
+      <div class="tc-acts" onclick="event.stopPropagation()">
+        ${t.fichaPdf?`<button class="tc-ab" title="Ver ficha" onclick="openFicha(${t.id})">📄</button>`:''}
+        <button class="tc-ab ${isCmp?'ca':''}" 
+        title="${isCmp?'Quitar de comparativa':`Añadir a comparativa (${S.compareList.length}/4)`}" 
+        onclick="toggleCmp(${t.id})" 
+        style="${isCmp?'':''}">
+        ${isCmp?'✓':`⚡`}
+      </button>
+      </div>
+    </div></div>`;
+}
+
+function renderTools(){
+  const list=filteredTools();
+  document.getElementById('rhCount').innerHTML=
+    `Mostrando <strong>${list.length}</strong> de <strong>${TOOLS.length}</strong> herramientas`;
+  const grid=document.getElementById('toolsGrid');
+  grid.className=`tg ${S.viewMode==='list'?'list':''}`;
+  grid.innerHTML=list.length?list.map(cardHTML).join(''):
+    `<div class="empty" style="grid-column:1/-1"><div class="ei">🔍</div>
+    <h3>Sin resultados</h3><p>Prueba con otros términos o limpia los filtros.</p></div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//  TÉCNICAS
+// ════════════════════════════════════════════════════════
+
+const TEC_CAT_COLORS = {
+  "A":{"bg":"#64469318","color":"#644693","label":"A · Basadas en Ejemplos"},
+  "B":{"bg":"#065F4618","color":"#065F46","label":"B · Razonamiento"},
+  "C":{"bg":"#6D28D918","color":"#6D28D9","label":"C · Estructuración"},
+  "D":{"bg":"#B4530918","color":"#B45309","label":"D · Flujo y Composición"},
+  "E":{"bg":"#0F4C8118","color":"#0F4C81","label":"E · Agentes y Sistemas"},
+};
+
+function renderTecnicas(){
+  // Category pills
+  const cats=['all','A','B','C','D','E'];
+  document.getElementById('tecCats').innerHTML=cats.map(c=>{
+    if(c==='all') return `<button class="tec-cat-pill ${S.activeTecCat==='all'?'':''}
+      " style="background:${S.activeTecCat==='all'?'var(--kg-blue)':'var(--kg-bg)'};
+      color:${S.activeTecCat==='all'?'#fff':'var(--kg-text2)'};border-color:var(--kg-border)"
+      onclick="setTecCat('all')">Todas (21)</button>`;
+    const info=TEC_CAT_COLORS[c];
+    const active=S.activeTecCat===c;
+    return `<button class="tec-cat-pill"
+      style="background:${active?info.color:info.bg};color:${active?'#fff':info.color};border-color:${info.color}40"
+      onclick="setTecCat('${c}')">${info.label}</button>`;
+  }).join('');
+
+  const list=TECNICAS.filter(t=>S.activeTecCat==='all'||t.cat===S.activeTecCat);
+  const info=id=>TEC_CAT_COLORS[id]||{bg:'#eee',color:'#333'};
+
+  document.getElementById('tecGrid').innerHTML=list.map(t=>`
+    <div class="tec-card" onclick="openTecModal('${t.id}')">
+      <div class="tec-letter" style="background:${info(t.cat).bg};color:${info(t.cat).color}">${t.cat}</div>
+      <div class="tec-name">${t.name}</div>
+      <div class="tec-desc">${t.desc.slice(0,100)}…</div>
+      <div class="tec-impact">${t.impacto}</div>
+    </div>`).join('');
+}
+
+function setTecCat(c){S.activeTecCat=c;renderTecnicas();}
+
+function openTecModal(id){
+  const t=TECNICAS.find(x=>x.id===id);
+  if(!t) return;
+  const info=TEC_CAT_COLORS[t.cat]||{color:'#644693',bg:'#eef'};
+  document.getElementById('modalContent').innerHTML=`
+    <div class="mh">
+      <div>
+        <div style="font-size:10px;color:var(--kg-text3);margin-bottom:2px">Categoría ${t.cat} · ${t.catLabel}</div>
+        <h2 style="font-size:18px;font-weight:700">${t.name}</h2>
+        <div style="height:3px;width:36px;background:${info.color};border-radius:2px;margin-top:5px"></div>
+      </div>
+      <button class="mc-x" onclick="closeModal()">×</button>
+    </div>
+    <div class="mb">
+      <div class="ms"><h4>Descripción</h4><p>${t.desc}</p></div>
+      <div class="ms"><h4>Cuándo usar</h4><p>${t.uso}</p></div>
+      <div class="ms"><h4>Ejemplo de prompt</h4>
+        <div style="background:var(--kg-bg);border:1px solid var(--kg-border);border-radius:8px;padding:12px;font-size:12px;font-family:monospace;white-space:pre-wrap;line-height:1.6;color:var(--kg-text)">${t.ejemplo}</div>
+      </div>
+      <div class="ms"><h4>Impacto documentado</h4>
+        <p style="color:var(--kg-teal);font-weight:500">${t.impacto}</p>
+      </div>
+    </div>
+    <div class="ma">
+      <button class="btn-p" onclick="copyText('${t.ejemplo.replace(/'/g,"&#39;").replace(/\n/g,"\\n")}',this)">📋 Copiar ejemplo</button>
+      <a class="btn-s" href="https://gemini.google.com/gem/16wRxSYsCmDOjTYiEFqlRpKlHiEwQHbLr?usp=sharing" target="_blank" rel="noopener">✨ Practicar en Gema</a>
+    </div>`;
+  document.getElementById('toolModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+// ════════════════════════════════════════════════════════
+//  SUGGEST
+// ════════════════════════════════════════════════════════
+
+function setSuggest(txt){document.getElementById('needInput').value=txt;}
+
+function runSuggest(){
+  const need=document.getElementById('needInput').value.trim();
+  if(!need) return;
+  const q=need.toLowerCase();
+  const relCats=new Set();
+  Object.entries(KW_CATS).forEach(([kw,cats])=>{if(q.includes(kw))cats.forEach(c=>relCats.add(c));});
+
+  const scored=TOOLS.map(t=>{
+    let score=0;
+    const words=q.split(/\s+/).filter(w=>w.length>3);
+    if(t.name.toLowerCase().includes(q.split(' ')[0])) score+=15;
+    words.forEach(w=>{
+      if(t.desc.toLowerCase().includes(w)) score+=4;
+      if(t.tags.some(tg=>tg.includes(w))) score+=3;
+    });
+    t.cats.forEach(c=>{if(relCats.has(c)) score+=8;});
+    return {...t,_score:score};
+  }).filter(t=>t._score>0).sort((a,b)=>b._score-a._score).slice(0,6);
+
+  // Sugerir técnica de prompting basada en keywords
+  let sugTec=null;
+  if(q.includes('calcul')||q.includes('roi')||q.includes('presupuest')||q.includes('número')) sugTec='B5';
+  else if(q.includes('verific')||q.includes('datos críticos')||q.includes('normativa')) sugTec='E4';
+  else if(q.includes('document')||q.includes('fuente')||q.includes('informe')) sugTec='E2';
+  else if(q.includes('estrategia')||q.includes('alternativa')||q.includes('opción')) sugTec='B2';
+  else if(q.includes('email')||q.includes('correo')||q.includes('redact')) sugTec='C3';
+  else if(q.includes('presentac')||q.includes('slide')||q.includes('informe')) sugTec='C3';
+  else if(q.includes('analiz')||q.includes('investigar')||q.includes('comprender')) sugTec='B1';
+  else if(q.includes('sesg')||q.includes('neutral')||q.includes('objetivo')) sugTec='E5';
+  else if(q.includes('didác')||q.includes('didact')||q.includes('educativ')||
+         q.includes('recurso')||q.includes('aprend')||q.includes('curso')||
+         q.includes('capacit')||q.includes('interactiv')||q.includes('elearning')||
+         q.includes('e-learning')) sugTec='D1'; // Prompt Chaining para recursos complejos
+  else sugTec='C4'; // Emotion Prompting por defecto
+
+  const tec=TECNICAS.find(x=>x.id===sugTec);
+
+  if(scored.length===0){
+    document.getElementById('suggestResults').style.display='block';
+    document.getElementById('suggestResults').innerHTML=`
+      <div class="sr-wrap"><div class="sr-head"><h3>Sin sugerencias</h3>
+      <button class="sr-close" onclick="hideSuggest()">✕</button></div>
+      <div class="empty"><div class="ei">🔍</div><h3>Intenta ser más específico</h3>
+      <p>Ej: "crear videos para TikTok", "automatizar emails", "construir app de inventario"</p></div></div>`;
+    return;
+  }
+
+  const top3=scored.slice(0,3);
+  const promptCards=top3.map(t=>{
+    const pd=PROMPTS_DB[t.name]||{tecnica:'Role-Based',prompt:`Actúa como experto en ${t.cats[0]}. Necesito que uses ${t.name} para: [describe tu tarea aquí]. El resultado debe ser [formato y longitud]. Esto es importante para mi proyecto.`};
+    const promptSafe=pd.prompt.replace(/'/g,"&#39;").replace(/\n/g,"\\n");
+    return `<div class="prompt-card">
+      <div class="pc-tool">🔧 ${t.name}</div>
+      <div class="pc-tecnica">Técnica: ${pd.tecnica}</div>
+      <div class="pc-prompt">${pd.prompt.slice(0,200)}${pd.prompt.length>200?'…':''}</div>
+      <button class="pc-copy" onclick="copyText('${promptSafe}',this)">📋 Copiar prompt completo</button>
+    </div>`;
+  }).join('');
+
+  document.getElementById('suggestResults').style.display='block';
+  document.getElementById('suggestResults').innerHTML=`
+    <div class="sr-wrap">
+      <div class="sr-head">
+        <h3>💡 ${scored.length} herramienta${scored.length>1?'s':''} recomendada${scored.length>1?'s':''} para <em>"${need}"</em></h3>
+        <button class="sr-close" onclick="hideSuggest()">✕</button>
+      </div>
+      <div class="sr-grid">
+        ${scored.map(t=>`<div class="sr-card" onclick="openModal(${t.id})">
+          <div class="sr-name">${t.name}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px">
+            ${t.cats.slice(0,2).map(c=>`<span class="cat-pill" style="--cat-color:${cc(c)}">${c}</span>`).join('')}
+          </div>
+          <div class="sr-why">${t.desc.slice(0,90)}…</div>
+          <div class="sr-score">★ Relevancia: ${t._score}</div>
+        </div>`).join('')}
+      </div>
+      <div class="prompts-section">
+        <h4>🚀 Prompts listos para las 3 mejores opciones
+          ${tec?`<span style="font-size:10px;background:var(--kg-teal-l);color:var(--kg-dark);padding:2px 8px;border-radius:10px">Técnica sugerida: ${tec.name}</span>`:''}
+        </h4>
+        <div class="prompts-grid">${promptCards}</div>
+        ${tec?`<div style="margin-top:10px;font-size:11px;color:var(--kg-text2)">
+          💡 Para esta necesidad, el Manual Kingala recomienda usar <strong>${tec.name}</strong>: ${tec.desc.slice(0,100)}…
+          <button onclick="setView('tecnicas-view')" style="background:none;border:none;color:var(--kg-blue);font-size:11px;cursor:pointer;text-decoration:underline">Ver técnica completa</button>
+        </div>`:''}
+      </div>
+    </div>`;
+}
+
+function hideSuggest(){document.getElementById('suggestResults').style.display='none';}
+
+// ════════════════════════════════════════════════════════
+//  MODAL
+// ════════════════════════════════════════════════════════
+
+function openModal(id){
+  const t=TOOLS.find(x=>x.id===id);
+  if(!t) return;
+  const color=cc(t.cats[0]);
+  const cats=t.cats.map(c=>`<span class="cat-pill" style="--cat-color:${cc(c)}">${c}</span>`).join('');
+  const tags=t.tags.map(tg=>`<span class="ms-tag">${tg}</span>`).join('');
+  const isCmp=S.compareList.includes(id);
+  const pd=PROMPTS_DB[t.name];
+
+  document.getElementById('modalContent').innerHTML=`
+    <div class="mh">
+      <div>
+        <div style="font-size:10px;color:var(--kg-text3);margin-bottom:2px">#${String(t.n).padStart(2,'0')} · ${t.cats[0]}</div>
+        <h2 style="font-size:18px;font-weight:700">${t.name}</h2>
+        <div style="height:3px;width:36px;background:${color};border-radius:2px;margin-top:5px"></div>
+      </div>
+      <button class="mc-x" onclick="closeModal()">×</button>
+    </div>
+    <div class="mb">
+      <div class="ms"><h4>Descripción</h4><p>${t.desc}</p></div>
+      <div class="ms"><h4>Categorías</h4><div class="ms-cats">${cats}</div></div>
+      <div class="ms"><h4>Modelo / Tecnología</h4><p>${t.modelo}</p></div>
+      <div class="ms"><h4>Planes y precios</h4><p>${t.plan}</p></div>
+      <div class="ms"><h4>Ventana de contexto</h4><p>${t.contexto}</p></div>
+      <div class="ms"><h4>Tags</h4><div class="ms-tags">${tags}</div></div>
+      ${pd?`<div class="ms"><h4>Prompt sugerido (técnica: ${pd.tecnica})</h4>
+        <div style="background:var(--kg-bg);border:1px solid var(--kg-border);border-radius:8px;padding:12px;font-size:11px;font-family:monospace;white-space:pre-wrap;line-height:1.6">${pd.prompt.slice(0,300)}${pd.prompt.length>300?'\n[...]':''}</div>
+        <button class="pc-copy" style="margin-top:7px" onclick="copyText('${pd.prompt.replace(/'/g,"&#39;").replace(/\n/g,"\\n")}',this)">📋 Copiar prompt completo</button>
+      </div>`:''}
+      <div class="ms"><h4>Ficha descriptiva</h4>
+        ${t.fichaPdf
+          ?`<iframe style="width:100%;height:460px;border:none;border-radius:8px;background:var(--kg-bg)" src="${t.fichaPdf}"></iframe>`
+          :`<div class="fp"><div style="font-size:28px">📄</div>
+            <div>Configura el campo <code>fichaPdf</code> con la URL pública del PDF en Drive</div></div>`}
+      </div>
+    </div>
+    <div class="ma">
+      <a class="btn-p" href="${t.url}" target="_blank" rel="noopener">↗ Ir a ${t.name}</a>
+      <button class="btn-s" onclick="toggleCmpFromModal(${id})">${isCmp?'✓ En comparativa':'+ Comparar'}</button>
+      <button class="btn-s" onclick="closeModal();setSuggest('${t.name.replace(/'/g,"\\'")}');runSuggest()">🔍 Similares</button>
+    </div>`;
+
+  document.getElementById('toolModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  document.getElementById('toolModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function toggleCmpFromModal(id){toggleCmp(id);closeModal();}
+
+// ════════════════════════════════════════════════════════
+//  COMPARE
+// ════════════════════════════════════════════════════════
+
+function toggleCmp(id){
+  const i=S.compareList.indexOf(id);
+  if(i>-1) S.compareList.splice(i,1);
+  else{
+    if(S.compareList.length>=4){showToast('Máximo 4 herramientas');return;}
+    S.compareList.push(id);
+  }
+  updateCmpUI(); renderTools();
+}
+
+function updateCmpUI(){
+  const n=S.compareList.length;
+  document.getElementById('cmpBadge').textContent=n;
+  document.getElementById('cpN').textContent=n;
+  const btn=document.getElementById('cpGoBtn');
+  btn.disabled=n<2; btn.style.opacity=n<2?'.4':'1';
+  document.getElementById('cpItems').innerHTML=S.compareList.map(id=>{
+    const t=TOOLS.find(x=>x.id===id);
+    return `<div class="cp-item">
+      <span style="width:7px;height:7px;border-radius:50%;background:${cc(t.cats[0])};display:inline-block"></span>
+      ${t.name}
+      <button class="cp-rm" onclick="toggleCmp(${id})">×</button></div>`;
+  }).join('');
+}
+
+function toggleCmpPanel(){document.getElementById('cpPanel').classList.toggle('open');}
+
+function openCmpView(){
+  setView('cmp-view');
+  renderCmpTable();
+  document.getElementById('cpPanel').classList.remove('open');
+}
+
+function renderCmpTable(){
+  const tools=S.compareList.map(id=>TOOLS.find(x=>x.id===id)).filter(Boolean);
+  if(tools.length<2){
+    document.getElementById('cmpContent').innerHTML=`<div class="empty"><div class="ei">⚡</div>
+      <h3>Selecciona al menos 2 herramientas</h3>
+      <p>Usa el botón ⚡ en cada tarjeta del catálogo.</p></div>`;
+    return;
+  }
+  // Datos de cuándo conviene / no conviene por herramienta
+  const PROS_CONS = {
+    "ChatGPT":    {pro:"Ecosistema más amplio, plugins, Custom GPTs, GPT-4o con voz y visión. El más universal.",con:"Costo Pro $200/mes elevado. Datos pueden usarse para entrenamiento en plan Free."},
+    "Claude":     {pro:"Mejor razonamiento en tareas largas y complejas. Ventana 200K. Artefactos muy útiles.",con:"Sin generación de imágenes nativa. Integrations limitadas vs OpenAI."},
+    "Gemini":     {pro:"1M tokens de contexto plano. Integración total con Google Workspace. Video+imagen+audio.",con:"Calidad en coding inferior a Claude/GPT. AI Ultra $249/mes muy caro."},
+    "Midjourney": {pro:"Calidad artística insuperable. Mejor para arte, ilustración y creatividad visual.",con:"Solo genera imágenes, requiere Discord. Sin plan gratuito."},
+    "Canva":      {pro:"Todo en uno: diseño, video, IA, social. El más accesible para no diseñadores.",con:"Menos control creativo que Figma/Adobe. AI de imágenes (Dream Lab) inferior a Midjourney."},
+    "Suno":       {pro:"El más fácil para música completa con letra y voz en segundos. Free generoso.",con:"Calidad musical inconsistente. Derechos comerciales solo en pago."},
+    "ElevenLabs": {pro:"La mejor calidad de voz sintética del mercado. 32 idiomas. Clonación precisa.",con:"Free muy limitado (10K chars/mes). Puede usarse con malos fines — verificar uso."},
+    "Zapier":     {pro:"6,000+ apps. El más fácil para no técnicos. Extensa documentación y comunidad.",con:"Pricing confuso (tasks). Flows complejos mejor en Make."},
+    "Make":       {pro:"El más potente para flujos complejos. Operaciones visuales. Mejor precio/capacidad.",con:"Curva de aprendizaje mayor que Zapier. Menos integraciones directas."},
+    "Bolt.new":   {pro:"Deploy inmediato sin instalar nada. Ideal para prototipos rápidos.",con:"Costo en tokens se dispara con apps complejas. Menos autónomo que Replit Agent."},
+    "Lovable":    {pro:"React+Supabase. Créditos compartidos en Pro ($25/mes equipo completo). Código exportable.",con:"Solo React/Supabase. Sin soporte para Python u otros lenguajes."},
+    "Replit AI":  {pro:"Agent 4 más autónomo del mercado (200 min/sesión). 50+ lenguajes. Deploy incluido.",con:"Costos de créditos impredecibles. Spending limits desactivados por defecto — activar antes de usar."},
+    "Perplexity": {pro:"Citas verificables. Respuestas en tiempo real con fuentes. Deep Research muy potente.",con:"No genera contenido creativo. No reemplaza un LLM para tareas de generación."},
+    "HeyGen":     {pro:"Lip sync preciso. Traducción de video con cambio de voz. El mejor para presentadores.",con:"Free muy limitado (1 min/mes). Avatar calidad depende mucho del foto de entrada."},
+    "Runway":     {pro:"Líder en calidad de video generado. Gen-4 Turbo, inpainting, audio a video.",con:"Créditos web y API completamente separados. Curva de aprendizaje en funciones avanzadas."},
+    "Kimi":       {pro:"1M tokens sin recargo. API 4-17x más barata que GPT. Agent Swarm 300 subagentes.",con:"Empresa china (privacidad de datos). Always-on thinking se factura siempre."},
+    "ManyChat":   {pro:"El estándar para WhatsApp/Instagram marketing. Fácil de usar. Resultados medibles.",con:"Precio sube con contactos. Costo WhatsApp de Meta es adicional."},
+    "Notion AI":  {pro:"IA integrada donde ya trabajas. Búsqueda en todo el workspace. Muy accesible.",con:"AI Add-on $10/usuario/mes puede ser caro en equipos grandes."},
+    "Granola":    {pro:"Resúmenes de reuniones muy precisos. SOC 2. Funciona en paralelo sin interrumpir.",con:"Free: solo 25 reuniones totales (no mensuales). Solo macOS."},
+  };
+
+  const rows=[
+    ['Categorías',t=>t.cats.join('<br>')],
+    ['Descripción',t=>t.desc],
+    ['✅ Cuándo SÍ conviene',t=>{const d=PROS_CONS[t.name];return d?`<span style="color:#065F46;font-size:11px">${d.pro}</span>`:'—';}],
+    ['⚠️ Cuándo NO conviene',t=>{const d=PROS_CONS[t.name];return d?`<span style="color:#991B1B;font-size:11px">${d.con}</span>`:'—';}],
+    ['Modelo / IA',t=>t.modelo],
+    ['Planes y precios',t=>t.plan],
+    ['Contexto',t=>t.contexto],
+    ['Tags',t=>t.tags.slice(0,5).join(', ')],
+    ['URL',t=>`<a href="${t.url}" target="_blank" style="color:var(--kg-blue)">${t.url.replace('https://','')}</a>`],
+  ];
+  document.getElementById('cmpContent').innerHTML=`
+    <div class="cmp-tw">
+      <table class="cmp-table">
+        <thead><tr><th>Atributo</th>${tools.map(t=>`<th style="border-top:3px solid ${cc(t.cats[0])}">${t.name}</th>`).join('')}</tr></thead>
+        <tbody>${rows.map(([l,fn])=>`<tr><td>${l}</td>${tools.map(t=>`<td>${fn(t)}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:7px;flex-wrap:wrap">
+      ${tools.map(t=>`<a href="${t.url}" target="_blank" class="btn-p" style="font-size:12px;text-decoration:none">↗ ${t.name}</a>`).join('')}
+      <button class="btn-s" onclick="S.compareList=[];updateCmpUI();renderCmpTable()">✕ Limpiar</button>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════
+//  FILTERS + VIEWS
+// ════════════════════════════════════════════════════════
+
+function toggleCat(cat){S.activeCats.has(cat)?S.activeCats.delete(cat):S.activeCats.add(cat);renderSidebar();renderTools();}
+function toggleTag(tag){S.activeTags.has(tag)?S.activeTags.delete(tag):S.activeTags.add(tag);renderSidebar();renderTools();}
+function clearFilters(){S.search='';S.activeCats.clear();S.activeTags.clear();document.getElementById('gSearch').value='';renderSidebar();renderTools();}
+
+function goHome(){
+  setView('catalog');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function setView(v){
+  S.currentView=v;
+  document.querySelectorAll('.view-sec').forEach(el=>{el.style.display='none';});
+  const target=document.getElementById(v);
+  if(target) target.style.display='block';
+  // actualizar nav pills
+  document.querySelectorAll('.np').forEach(b=>{
+    b.classList.toggle('active', b.dataset.view===v || (v==='catalog' && b.id==='navHome'));
+  });
+  if(v==='cmp-view'){renderCmpTable();renderQuickChips();}
+  if(v==='tecnicas-view') renderTecnicas();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderQuickChips(){
+  const el=document.getElementById('quickChips');
+  if(!el) return;
+  // Mostrar 20 herramientas más conocidas para selección rápida
+  const top=[1,2,3,7,8,10,11,17,25,31,33,45,46,48,49,55,56,57,58,60];
+  el.innerHTML=top.map(id=>{
+    const t=TOOLS.find(x=>x.id===id);
+    if(!t) return '';
+    const sel=S.compareList.includes(id);
+    return `<button onclick="toggleCmp(${id});renderQuickChips();renderCmpTable();"
+      style="font-size:11px;padding:4px 10px;border-radius:10px;cursor:pointer;transition:all .12s;
+      background:${sel?cc(t.cats[0]):'var(--kg-bg)'};
+      color:${sel?'#fff':'var(--kg-text2)'};
+      border:1px solid ${sel?cc(t.cats[0]):'var(--kg-border2)'};
+      font-weight:${sel?'600':'400'};">
+      ${sel?'✓ ':''}${t.name}
+    </button>`;
+  }).join('');
+}
+
+function setVMode(m){
+  S.viewMode=m;
+  document.getElementById('gBtn').classList.toggle('active',m==='grid');
+  document.getElementById('lBtn').classList.toggle('active',m==='list');
+  renderTools();
+}
+
+// ════════════════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════════════════
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function copyText(text,btn){
+  const decoded=text.replace(/&#39;/g,"'").replace(/\\n/g,"\n");
+  navigator.clipboard.writeText(decoded).then(()=>{
+    const orig=btn.textContent;
+    btn.textContent='✓ Copiado';
+    setTimeout(()=>btn.textContent=orig,1600);
+    showToast('Prompt copiado al portapapeles');
+  }).catch(()=>showToast('No se pudo copiar'));
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+
+document.getElementById('gSearch').addEventListener('input',e=>{
+  S.search=e.target.value; renderSidebar(); renderTools();
+});
+document.querySelectorAll('.np').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(b.dataset.view) setView(b.dataset.view);
+  });
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+// Initial render
+renderSidebar();
+renderTools();
+document.getElementById('catalog').style.display='block';
+document.getElementById('tecnicas-view').style.display='none';
+document.getElementById('cmp-view').style.display='none';
+</script>
+</body>
+</html>
